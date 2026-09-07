@@ -1,0 +1,921 @@
+{
+  "total_queries": 40,
+  "answerable_queries": 32,
+  "unanswerable_queries": 8,
+  "metrics": {
+    "recall_at_1": 71.9,
+    "recall_at_3": 71.9,
+    "recall_at_5": 71.9,
+    "recall_at_10": 71.9,
+    "contextual_recall_at_10": 78.1,
+    "mean_reciprocal_rank": 0.7188,
+    "anti_hallucination_rejection_rate": 100.0
+  },
+  "categories": {
+    "semantic_gap": {
+      "total": 9,
+      "recall_at_1": 44.4,
+      "recall_at_3": 44.4,
+      "recall_at_5": 44.4,
+      "recall_at_10": 44.4,
+      "mrr": 0.4444
+    },
+    "attributed": {
+      "total": 10,
+      "recall_at_1": 90.0,
+      "recall_at_3": 90.0,
+      "recall_at_5": 90.0,
+      "recall_at_10": 90.0,
+      "mrr": 0.9
+    },
+    "temporal": {
+      "total": 6,
+      "recall_at_1": 66.7,
+      "recall_at_3": 66.7,
+      "recall_at_5": 66.7,
+      "recall_at_10": 66.7,
+      "mrr": 0.6667
+    },
+    "hinglish_typo": {
+      "total": 5,
+      "recall_at_1": 80.0,
+      "recall_at_3": 80.0,
+      "recall_at_5": 80.0,
+      "recall_at_10": 80.0,
+      "mrr": 0.8
+    }
+  },
+  "latency": {
+    "search_ms": {
+      "min": 24.13,
+      "mean": 494.88,
+      "p50": 37.56,
+      "p90": 45.52,
+      "p99": 11226.69,
+      "max": 18374.51
+    },
+    "answer_ms": {
+      "min": 22.05,
+      "mean": 35.14,
+      "p50": 36.57,
+      "p90": 42.7,
+      "p99": 44.58,
+      "max": 45.44
+    }
+  },
+  "results": [
+    {
+      "id": "eval_01",
+      "query": "When did we decide on the trip destination?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 18374.51,
+      "answer_latency_ms": 26.68,
+      "retrieved_top_ids": [
+        "msg_02297",
+        "msg_02169",
+        "msg_02032",
+        "msg_01958",
+        "msg_01822"
+      ],
+      "expected_ids": [
+        "msg_00275"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": false,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_02",
+      "query": "Which accommodation did Sneha recommend for the hills?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 40.73,
+      "answer_latency_ms": 40.51,
+      "retrieved_top_ids": [
+        "msg_00390",
+        "msg_00018",
+        "msg_00052",
+        "msg_00081",
+        "msg_00119"
+      ],
+      "expected_ids": [
+        "msg_00390"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_03",
+      "query": "How are we traveling to the mountain vacation?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 28.8,
+      "answer_latency_ms": 29.51,
+      "retrieved_top_ids": [
+        "msg_01760",
+        "msg_01256",
+        "msg_00758",
+        "msg_03665",
+        "msg_01818"
+      ],
+      "expected_ids": [
+        "msg_00449"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": false,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_04",
+      "query": "What technology stack did Aman choose for the final project?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 43.72,
+      "answer_latency_ms": 43.17,
+      "retrieved_top_ids": [
+        "msg_01388",
+        "msg_03945",
+        "msg_02401",
+        "msg_00892",
+        "msg_00709"
+      ],
+      "expected_ids": [
+        "msg_00792"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": false,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_05",
+      "query": "What storage engine did we pick for local development?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 28.32,
+      "answer_latency_ms": 27.69,
+      "retrieved_top_ids": [
+        "msg_00996",
+        "msg_01544",
+        "msg_01372",
+        "msg_01211",
+        "msg_01135"
+      ],
+      "expected_ids": [
+        "msg_00996"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_06",
+      "query": "Which vector representation model works well for code-mixed chat?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 32.41,
+      "answer_latency_ms": 31.01,
+      "retrieved_top_ids": [
+        "msg_01525",
+        "msg_02574",
+        "msg_02243",
+        "msg_01535",
+        "msg_03945"
+      ],
+      "expected_ids": [
+        "msg_01525"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_07",
+      "query": "What did we name our hackathon team?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 29.94,
+      "answer_latency_ms": 33.21,
+      "retrieved_top_ids": [
+        "msg_01861",
+        "msg_01906",
+        "msg_04063",
+        "msg_03751",
+        "msg_03476"
+      ],
+      "expected_ids": [
+        "msg_01861"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_08",
+      "query": "Where is Priya's birthday dinner happening?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 46.04,
+      "answer_latency_ms": 40.25,
+      "retrieved_top_ids": [
+        "msg_00020",
+        "msg_00055",
+        "msg_00083",
+        "msg_00121",
+        "msg_00139"
+      ],
+      "expected_ids": [
+        "msg_03822"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": false,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_09",
+      "query": "What did Priya say about the budget?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 45.09,
+      "answer_latency_ms": 45.44,
+      "retrieved_top_ids": [
+        "msg_00290",
+        "msg_00020",
+        "msg_00055",
+        "msg_00083",
+        "msg_00121"
+      ],
+      "expected_ids": [
+        "msg_00290"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_10",
+      "query": "Where did Aman deploy the staging build?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 39.2,
+      "answer_latency_ms": 43.23,
+      "retrieved_top_ids": [
+        "msg_01388",
+        "msg_03018",
+        "msg_02016",
+        "msg_01279",
+        "msg_00998"
+      ],
+      "expected_ids": [
+        "msg_01388"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_11",
+      "query": "Who got an internship at Google?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 37.05,
+      "answer_latency_ms": 29.35,
+      "retrieved_top_ids": [
+        "msg_03046",
+        "msg_03442",
+        "msg_03732",
+        "msg_01833",
+        "msg_01796"
+      ],
+      "expected_ids": [
+        "msg_03046"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_12",
+      "query": "How much does everyone owe Rohan for dinner?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 46.76,
+      "answer_latency_ms": 42.67,
+      "retrieved_top_ids": [
+        "msg_02218",
+        "msg_01096",
+        "msg_00143",
+        "msg_03322",
+        "msg_02174"
+      ],
+      "expected_ids": [
+        "msg_02218"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_13",
+      "query": "Where did Neha ask the group to meet for exam prep?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 46.48,
+      "answer_latency_ms": 43.05,
+      "retrieved_top_ids": [
+        "msg_00027",
+        "msg_00179",
+        "msg_00228",
+        "msg_00260",
+        "msg_00337"
+      ],
+      "expected_ids": [
+        "msg_02492"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": false,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_14",
+      "query": "What did Sneha say about Snow Valley Resorts?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 43.36,
+      "answer_latency_ms": 41.1,
+      "retrieved_top_ids": [
+        "msg_00390",
+        "msg_03975",
+        "msg_03664",
+        "msg_03128",
+        "msg_03061"
+      ],
+      "expected_ids": [
+        "msg_00390"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_15",
+      "query": "What did Vikram recommend regarding bus travel?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 43.88,
+      "answer_latency_ms": 42.29,
+      "retrieved_top_ids": [
+        "msg_00449",
+        "msg_04170",
+        "msg_04143",
+        "msg_04117",
+        "msg_04109"
+      ],
+      "expected_ids": [
+        "msg_00449"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_16",
+      "query": "What team name did Ananya register for the hackathon?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 43.09,
+      "answer_latency_ms": 38.92,
+      "retrieved_top_ids": [
+        "msg_01861",
+        "msg_01906",
+        "msg_00595",
+        "msg_00201",
+        "msg_00529"
+      ],
+      "expected_ids": [
+        "msg_01861"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_17",
+      "query": "What was decided on March 14?",
+      "category": "temporal",
+      "unanswerable": false,
+      "search_latency_ms": 28.48,
+      "answer_latency_ms": 27.44,
+      "retrieved_top_ids": [
+        "msg_00285",
+        "msg_00278",
+        "msg_00282",
+        "msg_00270",
+        "msg_00283"
+      ],
+      "expected_ids": [
+        "msg_00275"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_18",
+      "query": "When was the DS exam rescheduled to in June?",
+      "category": "temporal",
+      "unanswerable": false,
+      "search_latency_ms": 39.91,
+      "answer_latency_ms": 38.26,
+      "retrieved_top_ids": [
+        "msg_02565",
+        "msg_02543",
+        "msg_02509",
+        "msg_02444",
+        "msg_02361"
+      ],
+      "expected_ids": [
+        "msg_02565"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_19",
+      "query": "What major career news happened on July 8?",
+      "category": "temporal",
+      "unanswerable": false,
+      "search_latency_ms": 31.94,
+      "answer_latency_ms": 31.33,
+      "retrieved_top_ids": [
+        "msg_03046",
+        "msg_03049",
+        "msg_03048",
+        "msg_03047",
+        "msg_03039"
+      ],
+      "expected_ids": [
+        "msg_03046"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_20",
+      "query": "What happened on the night of August 10?",
+      "category": "temporal",
+      "unanswerable": false,
+      "search_latency_ms": 25.34,
+      "answer_latency_ms": 30.47,
+      "retrieved_top_ids": [
+        "msg_03822",
+        "msg_03826",
+        "msg_03825",
+        "msg_03816",
+        "msg_03819"
+      ],
+      "expected_ids": [
+        "msg_03822"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_21",
+      "query": "What project tech decisions were finalized in early April?",
+      "category": "temporal",
+      "unanswerable": false,
+      "search_latency_ms": 43.79,
+      "answer_latency_ms": 41.01,
+      "retrieved_top_ids": [
+        "msg_00719",
+        "msg_00787",
+        "msg_00812",
+        "msg_01322",
+        "msg_00848"
+      ],
+      "expected_ids": [
+        "msg_00792"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": false,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_22",
+      "query": "What happened on May 20 evening?",
+      "category": "temporal",
+      "unanswerable": false,
+      "search_latency_ms": 32.46,
+      "answer_latency_ms": 29.44,
+      "retrieved_top_ids": [
+        "msg_01906",
+        "msg_01912",
+        "msg_01919",
+        "msg_01920",
+        "msg_01923"
+      ],
+      "expected_ids": [
+        "msg_01906"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_23",
+      "query": "What did Priya say about the trip budget in March?",
+      "category": "combined",
+      "unanswerable": false,
+      "search_latency_ms": 35.61,
+      "answer_latency_ms": 37.69,
+      "retrieved_top_ids": [
+        "msg_00290",
+        "msg_00328",
+        "msg_00197",
+        "msg_00165",
+        "msg_00139"
+      ],
+      "expected_ids": [
+        "msg_00290"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_24",
+      "query": "What resource did Priya share for interview preparation in July?",
+      "category": "combined",
+      "unanswerable": false,
+      "search_latency_ms": 37.21,
+      "answer_latency_ms": 36.25,
+      "retrieved_top_ids": [
+        "msg_03442",
+        "msg_02854",
+        "msg_02904",
+        "msg_02915",
+        "msg_02923"
+      ],
+      "expected_ids": [
+        "msg_03442"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_25",
+      "query": "What deadline did Ananya announce on May 20?",
+      "category": "hinglish_typo",
+      "unanswerable": false,
+      "search_latency_ms": 24.13,
+      "answer_latency_ms": 23.93,
+      "retrieved_top_ids": [
+        "msg_01906",
+        "msg_01923"
+      ],
+      "expected_ids": [
+        "msg_01906"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_26",
+      "query": "What did Sneha organize for Priya in August?",
+      "category": "semantic_gap",
+      "unanswerable": false,
+      "search_latency_ms": 34.06,
+      "answer_latency_ms": 36.78,
+      "retrieved_top_ids": [
+        "msg_03821",
+        "msg_03898",
+        "msg_03939",
+        "msg_04046",
+        "msg_03728"
+      ],
+      "expected_ids": [
+        "msg_03822"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_27",
+      "query": "What did Neha announce regarding exams in June?",
+      "category": "hinglish_typo",
+      "unanswerable": false,
+      "search_latency_ms": 34.45,
+      "answer_latency_ms": 33.14,
+      "retrieved_top_ids": [
+        "msg_02565",
+        "msg_02212",
+        "msg_02219",
+        "msg_02486",
+        "msg_02757"
+      ],
+      "expected_ids": [
+        "msg_02565"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_28",
+      "query": "Manali kab confirm hua tha?",
+      "category": "hinglish_typo",
+      "unanswerable": false,
+      "search_latency_ms": 25.38,
+      "answer_latency_ms": 26.0,
+      "retrieved_top_ids": [
+        "msg_03697",
+        "msg_03638",
+        "msg_03578",
+        "msg_03277",
+        "msg_02969"
+      ],
+      "expected_ids": [
+        "msg_00275"
+      ],
+      "direct_rank": null,
+      "reciprocal_rank": 0.0,
+      "in_context": false,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_29",
+      "query": "Priya ka max budget kitna tha per head?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 42.56,
+      "answer_latency_ms": 41.46,
+      "retrieved_top_ids": [
+        "msg_00290",
+        "msg_04173",
+        "msg_04145",
+        "msg_04118",
+        "msg_04110"
+      ],
+      "expected_ids": [
+        "msg_00290"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_30",
+      "query": "Biryani ka bill kitna tha aur kisko paise bhejne the?",
+      "category": "attributed",
+      "unanswerable": false,
+      "search_latency_ms": 28.1,
+      "answer_latency_ms": 27.11,
+      "retrieved_top_ids": [
+        "msg_02218",
+        "msg_03843",
+        "msg_02798",
+        "msg_00465",
+        "msg_00820"
+      ],
+      "expected_ids": [
+        "msg_02218"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_31",
+      "query": "DS ka exam kab postpone hua?",
+      "category": "hinglish_typo",
+      "unanswerable": false,
+      "search_latency_ms": 26.38,
+      "answer_latency_ms": 22.05,
+      "retrieved_top_ids": [
+        "msg_02565",
+        "msg_02404",
+        "msg_02246",
+        "msg_02186",
+        "msg_02164"
+      ],
+      "expected_ids": [
+        "msg_02565"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_32",
+      "query": "whn did aman gt the google offr?",
+      "category": "hinglish_typo",
+      "unanswerable": false,
+      "search_latency_ms": 40.32,
+      "answer_latency_ms": 39.27,
+      "retrieved_top_ids": [
+        "msg_03046",
+        "msg_00283",
+        "msg_00442",
+        "msg_00012",
+        "msg_00063"
+      ],
+      "expected_ids": [
+        "msg_03046"
+      ],
+      "direct_rank": 1,
+      "reciprocal_rank": 1.0,
+      "in_context": true,
+      "confidence": 0.95
+    },
+    {
+      "id": "eval_33",
+      "query": "What is Rahul's favorite restaurant?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 39.39,
+      "answer_latency_ms": 34.16,
+      "retrieved_top_ids": [
+        "msg_03308",
+        "msg_02457",
+        "msg_03581",
+        "msg_03148",
+        "msg_01880"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    },
+    {
+      "id": "eval_34",
+      "query": "Where did Sneha buy her laptop?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 34.75,
+      "answer_latency_ms": 36.37,
+      "retrieved_top_ids": [
+        "msg_00086",
+        "msg_00398",
+        "msg_00726",
+        "msg_00212",
+        "msg_00060"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    },
+    {
+      "id": "eval_35",
+      "query": "What did Vikram score in the GRE exam?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 37.99,
+      "answer_latency_ms": 39.21,
+      "retrieved_top_ids": [
+        "msg_00636",
+        "msg_00874",
+        "msg_00937",
+        "msg_01040",
+        "msg_00175"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    },
+    {
+      "id": "eval_36",
+      "query": "What brand of car does Rohan drive?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 37.92,
+      "answer_latency_ms": 38.24,
+      "retrieved_top_ids": [
+        "msg_03350",
+        "msg_02024",
+        "msg_03103",
+        "msg_03411",
+        "msg_00700"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    },
+    {
+      "id": "eval_37",
+      "query": "Who pays for the group's Netflix subscription?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 27.04,
+      "answer_latency_ms": 27.0,
+      "retrieved_top_ids": [
+        "msg_02218",
+        "msg_01200",
+        "msg_01160",
+        "msg_01061",
+        "msg_01007"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    },
+    {
+      "id": "eval_38",
+      "query": "When did Ananya visit Paris?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 33.72,
+      "answer_latency_ms": 30.44,
+      "retrieved_top_ids": [
+        "msg_00196",
+        "msg_00117",
+        "msg_00160",
+        "msg_00687",
+        "msg_00803"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    },
+    {
+      "id": "eval_39",
+      "query": "What is Neha's dog's breed and name?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 39.32,
+      "answer_latency_ms": 38.42,
+      "retrieved_top_ids": [
+        "msg_02820",
+        "msg_02762",
+        "msg_02285",
+        "msg_01888",
+        "msg_01651"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    },
+    {
+      "id": "eval_40",
+      "query": "What exact stipend amount is Google paying Aman per month?",
+      "category": "unanswerable",
+      "unanswerable": true,
+      "search_latency_ms": 45.46,
+      "answer_latency_ms": 42.0,
+      "retrieved_top_ids": [
+        "msg_03046",
+        "msg_04280",
+        "msg_04130",
+        "msg_04057",
+        "msg_03959"
+      ],
+      "expected_ids": [],
+      "refusal_success": true,
+      "confidence": 0.0,
+      "answer": "Based on the conversation history, this information was not found or discussed in the group chat."
+    }
+  ]
+}

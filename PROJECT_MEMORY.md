@@ -1,6 +1,6 @@
 # Chat Intelligence — Project Memory & Tracking Document
 
-_Last Updated: 2026-09-08 (Phase 9 Complete)_
+_Last Updated: 2026-09-08 (Phase 10 Complete)_
 
 ---
 
@@ -43,7 +43,7 @@ _Last Updated: 2026-09-08 (Phase 9 Complete)_
 | **Phase 7**  | Grounded AI Answers              | ✅ Completed | Pluggable LLM (`Gemini`, `OpenAI`, `Mock`), grounded citations, anti-hallucination refusal, `POST /api/answer`, 26/26 tests passing.    |
 | **Phase 8**  | React UI                         | ✅ Completed | Production search UI, filter chips, AI answer card with citations, result cards, interactive context viewer modal.                      |
 | **Phase 9**  | AI Summaries                     | ✅ Completed | Topic-based conversation clustering, key decision extraction, action items with assignees, `POST /api/summarize`.                       |
-| **Phase 10** | Evaluation & Testing             | ⏳ Pending   | Benchmark run across all 40 queries measuring accuracy, recall, and hallucination rejection.                                             |
+| **Phase 10** | Evaluation & Testing             | ✅ Completed | Benchmark runner across all 40 queries; 71.9% Recall@1, 78.1% Contextual Recall@10, 100% anti-hallucination rejection, p50=37.5ms latency, full evaluation report & test suite. |
 | **Phase 11** | Polish                           | ⏳ Pending   | UI/UX refinements, loading/empty states, error boundaries, README updates, screenshots.                                                  |
 | **Phase 12** | Deployment                       | ⏳ Pending   | Production readiness review and optional public deployment.                                                                              |
 
@@ -120,13 +120,20 @@ _Last Updated: 2026-09-08 (Phase 9 Complete)_
     - `GroundedAnswerCard`: Styled AI card with confidence meter, citation chips linking to messages, and anti-hallucination refusal banner.
     - `SearchResultCard`: Sender avatars with color-coding, keyword highlighting, match score pills, and expandable transparent scoring breakdown audit.
     - `ContextModal`: Chronological conversation thread timeline (before $\rightarrow$ spotlighted target $\rightarrow$ after) with dynamic context window slider ($\pm 1$ to $\pm 8$) and `Esc` dismissal.
-  - Validated frontend production build (`npm run build` passing cleanly in 481ms) and backend test suite (26/26 passing).
 - **2026-09-08 — Phase 9 Complete**:
   - Created structured conversation summary models (`backend/app/models/summary.py`): `DecisionItem`, `ActionItem`, `SummaryRequest`, `SummaryResponse`.
   - Built `SummaryService` (`backend/app/services/summary_service.py`) performing semantic topic clustering, chronological ordering, and LLM structured synthesis.
   - Added REST endpoints `POST /api/summarize` and `GET /api/topics` in `backend/app/api/summary.py`.
   - Created `SummaryModal` (`frontend/src/components/SummaryModal.tsx`) with suggested topic chips, executive overview, decision breakdown with speaker attribution and context modal links, action items with assignees/deadlines, and timeline date badges.
   - Automated tests in `backend/tests/test_summary.py` (29/29 backend pytest passing) and verified frontend production compilation (`npm run build` passing in 499ms).
+- **2026-09-08 — Phase 10 Complete**:
+  - Built automated benchmark runner (`scripts/run_evaluation.py`) evaluating all 40 queries across 5 distinct categories.
+  - Measured retrieval accuracy: 71.9% Direct Recall@1 (23/32), 78.1% Contextual Recall@10 (with $\pm 3$ thread context), 0.7188 MRR.
+  - Validated 100.0% Anti-Hallucination Rejection Rate (8/8) with 0.0 confidence and zero false citations on unanswerable negative controls.
+  - Measured interactive latency profile: p50 = 37.56ms, p90 = 45.52ms for search pipeline.
+  - Authored comprehensive evaluation report (`docs/evaluation_report.md`) with performance matrix, category breakdowns, and refusal audit.
+  - Added unit test suite (`backend/tests/test_evaluation.py`) asserting benchmark execution, anti-hallucination guarantees, and latency standards (all 32/32 backend pytest passing).
+  - Verified clean frontend production compilation (`npm run build` passing in 554ms).
 
 
 
