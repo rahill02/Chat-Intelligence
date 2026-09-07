@@ -156,3 +156,4 @@ class FAISSVectorStore(BaseVectorStore):
 
     def count(self) -> int:
         return self._index.ntotal if self._index else 0
+

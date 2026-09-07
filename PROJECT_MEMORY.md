@@ -1,6 +1,6 @@
 # Chat Intelligence — Project Memory & Tracking Document
 
-*Last Updated: 2026-09-08 (Phase 2 In Progress)*
+_Last Updated: 2026-09-08 (Phase 2 In Progress)_
 
 ---
 
@@ -31,21 +31,21 @@
 
 ## 3. Phase Roadmap & Execution Status
 
-| Phase | Description | Status | Milestone Details |
-|---|---|---|---|
-| **Phase 0** | Architecture & Environment Check | ✅ Completed | Python 3.13, Node 22, npm 10 verified; folder skeleton, `.gitignore`, `.env.example`, `docs/architecture.md` created. |
-| **Phase 1** | Project Foundation | ✅ Completed | FastAPI backend + health API (`GET /api/health`), React Vite Tailwind frontend with live connectivity, Pytest passing, Commit `fbd24f3`. |
-| **Phase 2** | Data Model & Dataset | ✅ Completed | Domain models, 4,300 messages across 8 participants, 6-month timeline, SQLite repo, 40 benchmark queries, Commit milestone. |
-| **Phase 3** | Embedding & Vector Index | ✅ Completed | `EmbeddingProvider` (`multilingual-e5-small` & mock), FAISS VectorStore (`IndexFlatIP`), 4,300 messages embedded, index persisted. |
-| **Phase 4** | Semantic Search | ⏳ Pending | Query vectorization, FAISS retrieval, Top-K ranking, similarity scoring, search tests. |
-| **Phase 5** | Query Understanding & Filters | ⏳ Pending | Intent extraction, sender detection, temporal constraint extraction, combined filters. |
-| **Phase 6** | Ranking & Context | ⏳ Pending | Transparent hybrid scoring, context window expansion ($\pm 3$ messages), matched message highlighting. |
-| **Phase 7** | Grounded AI Answers | ⏳ Pending | `LLMProvider` abstraction, citation-based grounded synthesis, refusal on unanswerable queries. |
-| **Phase 8** | React UI | ⏳ Pending | Production search interface, filter chips, AI answer card, result list, interactive context viewer. |
-| **Phase 9** | AI Summaries | ⏳ Pending | Topic-based summaries and decision extraction bonus feature. |
-| **Phase 10** | Evaluation & Testing | ⏳ Pending | Benchmark run across all 40 queries measuring accuracy, recall, and hallucination rejection. |
-| **Phase 11** | Polish | ⏳ Pending | UI/UX refinements, loading/empty states, error boundaries, README updates, screenshots. |
-| **Phase 12** | Deployment | ⏳ Pending | Production readiness review and optional public deployment. |
+| Phase        | Description                      | Status       | Milestone Details                                                                                                                        |
+| ------------ | -------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Phase 0**  | Architecture & Environment Check | ✅ Completed | Python 3.13, Node 22, npm 10 verified; folder skeleton, `.gitignore`, `.env.example`, `docs/architecture.md` created.                    |
+| **Phase 1**  | Project Foundation               | ✅ Completed | FastAPI backend + health API (`GET /api/health`), React Vite Tailwind frontend with live connectivity, Pytest passing, Commit `fbd24f3`. |
+| **Phase 2**  | Data Model & Dataset             | ✅ Completed | Domain models, 4,300 messages across 8 participants, 6-month timeline, SQLite repo, 40 benchmark queries, Commit milestone.              |
+| **Phase 3**  | Embedding & Vector Index         | ✅ Completed | `EmbeddingProvider` (`multilingual-e5-small` & mock), FAISS VectorStore (`IndexFlatIP`), 4,300 messages embedded, index persisted.       |
+| **Phase 4**  | Semantic Search                  | ✅ Completed | `SearchService`, query vectorization, candidate hydration from SQLite, `POST /api/search` endpoint, tests passing.                       |
+| **Phase 5**  | Query Understanding & Filters    | ⏳ Pending   | Intent extraction, sender detection, temporal constraint extraction, combined filters.                                                   |
+| **Phase 6**  | Ranking & Context                | ⏳ Pending   | Transparent hybrid scoring, context window expansion ($\pm 3$ messages), matched message highlighting.                                   |
+| **Phase 7**  | Grounded AI Answers              | ⏳ Pending   | `LLMProvider` abstraction, citation-based grounded synthesis, refusal on unanswerable queries.                                           |
+| **Phase 8**  | React UI                         | ⏳ Pending   | Production search interface, filter chips, AI answer card, result list, interactive context viewer.                                      |
+| **Phase 9**  | AI Summaries                     | ⏳ Pending   | Topic-based summaries and decision extraction bonus feature.                                                                             |
+| **Phase 10** | Evaluation & Testing             | ⏳ Pending   | Benchmark run across all 40 queries measuring accuracy, recall, and hallucination rejection.                                             |
+| **Phase 11** | Polish                           | ⏳ Pending   | UI/UX refinements, loading/empty states, error boundaries, README updates, screenshots.                                                  |
+| **Phase 12** | Deployment                       | ⏳ Pending   | Production readiness review and optional public deployment.                                                                              |
 
 ---
 
@@ -88,3 +88,9 @@
   - Implemented `BaseVectorStore` and `FAISSVectorStore` using `IndexFlatIP` (exact cosine similarity), supporting serialization to `.index` and `metadata.json`.
   - Built batch indexing pipeline `scripts/build_index.py`, embedding all 4,300 messages and persisting the FAISS vector index (6.30 MB index, 1.19 MB metadata).
   - Validated with unit tests in `backend/tests/test_vector_store.py` (8/8 pytest passing).
+- **2026-09-08 — Phase 4 Complete**:
+  - Implemented Pydantic models for search requests and responses (`backend/app/models/search.py`).
+  - Built `SearchService` (`backend/app/services/search_service.py`) supporting query vectorization, FAISS candidate retrieval, and SQLite message hydration.
+  - Added singleton provider and index loader (`get_search_service`).
+  - Created REST endpoint `POST /api/search` with input validation and latency tracking.
+  - Automated tests in `backend/tests/test_search.py` (11/11 backend pytest passing).

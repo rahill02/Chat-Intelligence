@@ -97,3 +97,4 @@ def test_faiss_vector_store_persistence():
         assert len(results) == 1
         assert results[0][0] == "msg_b"
         assert results[0][2]["seq"] == 2
+

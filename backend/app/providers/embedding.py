@@ -105,3 +105,4 @@ class MockEmbeddingProvider(BaseEmbeddingProvider):
     def embed_query(self, text: str) -> np.ndarray:
         vec = self._hash_text_to_vector(text)
         return np.expand_dims(vec, axis=0).astype(np.float32)
+

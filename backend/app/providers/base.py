@@ -44,3 +44,4 @@ class BaseLLMProvider(ABC):
     ) -> dict:
         """Generates structured summary of conversation segment."""
         pass
+

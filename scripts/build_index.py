@@ -121,3 +121,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     build_index(use_mock=args.mock, batch_size=args.batch_size)
+
