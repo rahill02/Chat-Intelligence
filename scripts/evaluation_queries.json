@@ -1,0 +1,603 @@
+[
+  {
+    "id": "eval_01",
+    "query": "When did we decide on the trip destination?",
+    "query_type": "semantic",
+    "expected_answer": "Manali was confirmed on March 14, with Rahul handling hotel booking.",
+    "expected_message_ids": [
+      "msg_00285"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Rahul Sharma",
+    "date_range": {
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+    },
+    "unanswerable": false,
+    "notes": "Query uses 'decide on the trip destination'; message says 'Manali confirmed'."
+  },
+  {
+    "id": "eval_02",
+    "query": "Which accommodation did Sneha recommend for the hills?",
+    "query_type": "semantic",
+    "expected_answer": "Sneha recommended Snow Valley Resorts as it fits the budget.",
+    "expected_message_ids": [
+      "msg_00387"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Sneha Rao",
+    "date_range": {
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+    },
+    "unanswerable": false,
+    "notes": "Query asks for 'accommodation' and 'hills'; message mentions 'Snow Valley Resorts'."
+  },
+  {
+    "id": "eval_03",
+    "query": "How are we traveling to the mountain vacation?",
+    "query_type": "semantic",
+    "expected_answer": "Vikram suggested traveling by Volvo semi-sleeper bus from Majnu Ka Tila.",
+    "expected_message_ids": [
+      "msg_00436"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Vikram Singh",
+    "date_range": {
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+    },
+    "unanswerable": false,
+    "notes": "Query uses 'mountain vacation' and 'traveling'; message mentions 'Volvo semi-sleeper bus from Majnu Ka Tila'."
+  },
+  {
+    "id": "eval_04",
+    "query": "What technology stack did Aman choose for the final project?",
+    "query_type": "semantic",
+    "expected_answer": "FastAPI for the backend and React with Vite for the frontend.",
+    "expected_message_ids": [
+      "msg_00709"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Aman Verma",
+    "date_range": {
+      "start": "2026-04-01",
+      "end": "2026-04-30"
+    },
+    "unanswerable": false,
+    "notes": "Query asks for 'technology stack'; message says 'building the backend on FastAPI and pair it with React on Vite'."
+  },
+  {
+    "id": "eval_05",
+    "query": "What storage engine did we pick for local development?",
+    "query_type": "semantic",
+    "expected_answer": "SQLite for local development with repository abstractions for PostgreSQL.",
+    "expected_message_ids": [
+      "msg_00980"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Rahul Sharma",
+    "date_range": {
+      "start": "2026-04-01",
+      "end": "2026-04-30"
+    },
+    "unanswerable": false,
+    "notes": "Query says 'storage engine'; message mentions 'stick with SQLite'."
+  },
+  {
+    "id": "eval_06",
+    "query": "Which vector representation model works well for code-mixed chat?",
+    "query_type": "semantic",
+    "expected_answer": "The multilingual E5 small embedding model.",
+    "expected_message_ids": [
+      "msg_01602"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Rahul Sharma",
+    "date_range": {
+      "start": "2026-05-01",
+      "end": "2026-05-31"
+    },
+    "unanswerable": false,
+    "notes": "Query asks for 'vector representation model'; message says 'multilingual E5 small embedding model'."
+  },
+  {
+    "id": "eval_07",
+    "query": "What did we name our hackathon team?",
+    "query_type": "semantic",
+    "expected_answer": "NeuralByte.",
+    "expected_message_ids": [
+      "msg_01910"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Ananya Joshi",
+    "date_range": {
+      "start": "2026-05-01",
+      "end": "2026-05-31"
+    },
+    "unanswerable": false,
+    "notes": "Query asks for 'team name'; message states 'Registered our squad under the moniker NeuralByte'."
+  },
+  {
+    "id": "eval_08",
+    "query": "Where is Priya's birthday dinner happening?",
+    "query_type": "semantic",
+    "expected_answer": "Olive Bistro at 8 PM on August 10.",
+    "expected_message_ids": [
+      "msg_03889"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Sneha Rao",
+    "date_range": {
+      "start": "2026-08-01",
+      "end": "2026-08-31"
+    },
+    "unanswerable": false,
+    "notes": "Query says 'birthday dinner'; message says 'Table reserved at Olive Bistro for Priya's surprise party'."
+  },
+  {
+    "id": "eval_09",
+    "query": "What did Priya say about the budget?",
+    "query_type": "attributed",
+    "expected_answer": "Priya stated that total expenditure should be capped at ₹5,000 per person max, strictly.",
+    "expected_message_ids": [
+      "msg_00296"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Priya Patel",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Priya Patel."
+  },
+  {
+    "id": "eval_10",
+    "query": "Where did Aman deploy the staging build?",
+    "query_type": "attributed",
+    "expected_answer": "Aman deployed the staging continuous deployment pipeline on Render.",
+    "expected_message_ids": [
+      "msg_01430"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Aman Verma",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Aman Verma."
+  },
+  {
+    "id": "eval_11",
+    "query": "Who got an internship at Google?",
+    "query_type": "attributed",
+    "expected_answer": "Aman Verma signed the offer letter for Google summer SWE internship.",
+    "expected_message_ids": [
+      "msg_03129"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Aman Verma",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Aman Verma."
+  },
+  {
+    "id": "eval_12",
+    "query": "How much does everyone owe Rohan for dinner?",
+    "query_type": "attributed",
+    "expected_answer": "Everyone owes Rohan ₹300 via GPay or PhonePe for the Paradise Biryani bill.",
+    "expected_message_ids": [
+      "msg_02319"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Rohan Mehta",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Rohan Mehta."
+  },
+  {
+    "id": "eval_13",
+    "query": "Where did Neha ask the group to meet for exam prep?",
+    "query_type": "attributed",
+    "expected_answer": "In the 3rd floor reading room by 11 AM with OS notes.",
+    "expected_message_ids": [
+      "msg_02599"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Neha Gupta",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Neha Gupta."
+  },
+  {
+    "id": "eval_14",
+    "query": "What did Sneha say about Snow Valley Resorts?",
+    "query_type": "attributed",
+    "expected_answer": "Sneha mentioned that Snow Valley Resorts looks neat and falls within budget.",
+    "expected_message_ids": [
+      "msg_00387"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Sneha Rao",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Sneha Rao."
+  },
+  {
+    "id": "eval_15",
+    "query": "What did Vikram recommend regarding bus travel?",
+    "query_type": "attributed",
+    "expected_answer": "Vikram recommended taking the Volvo semi-sleeper bus from Majnu Ka Tila as it is safer and cheaper.",
+    "expected_message_ids": [
+      "msg_00436"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Vikram Singh",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Vikram Singh."
+  },
+  {
+    "id": "eval_16",
+    "query": "What team name did Ananya register for the hackathon?",
+    "query_type": "attributed",
+    "expected_answer": "NeuralByte.",
+    "expected_message_ids": [
+      "msg_01910"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Ananya Joshi",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Attributed to Ananya Joshi."
+  },
+  {
+    "id": "eval_17",
+    "query": "What was decided on March 14?",
+    "query_type": "temporal",
+    "expected_answer": "Manali was confirmed as the trip destination on March 14.",
+    "expected_message_ids": [
+      "msg_00285"
+    ],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": {
+      "start": "2026-03-14",
+      "end": "2026-03-14"
+    },
+    "unanswerable": false,
+    "notes": "Exact date query: March 14, 2026."
+  },
+  {
+    "id": "eval_18",
+    "query": "When was the DS exam rescheduled to in June?",
+    "query_type": "temporal",
+    "expected_answer": "The Distributed Systems exam was postponed to June 22.",
+    "expected_message_ids": [
+      "msg_02677"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Neha Gupta",
+    "date_range": {
+      "start": "2026-06-01",
+      "end": "2026-06-30"
+    },
+    "unanswerable": false,
+    "notes": "Temporal constraint: June 2026."
+  },
+  {
+    "id": "eval_19",
+    "query": "What major career news happened on July 8?",
+    "query_type": "temporal",
+    "expected_answer": "Aman signed the offer letter for the Google summer SWE internship.",
+    "expected_message_ids": [
+      "msg_03129"
+    ],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": {
+      "start": "2026-07-08",
+      "end": "2026-07-08"
+    },
+    "unanswerable": false,
+    "notes": "Temporal query: July 8, 2026."
+  },
+  {
+    "id": "eval_20",
+    "query": "What happened on the night of August 10?",
+    "query_type": "temporal",
+    "expected_answer": "Priya's surprise birthday party at Olive Bistro at 8 PM.",
+    "expected_message_ids": [
+      "msg_03889"
+    ],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": {
+      "start": "2026-08-10",
+      "end": "2026-08-10"
+    },
+    "unanswerable": false,
+    "notes": "Temporal query: August 10, 2026."
+  },
+  {
+    "id": "eval_21",
+    "query": "What project tech decisions were finalized in early April?",
+    "query_type": "temporal",
+    "expected_answer": "FastAPI and React on Vite were finalized on April 3.",
+    "expected_message_ids": [
+      "msg_00709"
+    ],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": {
+      "start": "2026-04-01",
+      "end": "2026-04-10"
+    },
+    "unanswerable": false,
+    "notes": "Temporal query: early April 2026."
+  },
+  {
+    "id": "eval_22",
+    "query": "What happened on May 20 evening?",
+    "query_type": "temporal",
+    "expected_answer": "The GitHub repo submission deadline of 11:59 PM for CodeHack hackathon.",
+    "expected_message_ids": [
+      "msg_01988"
+    ],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": {
+      "start": "2026-05-20",
+      "end": "2026-05-20"
+    },
+    "unanswerable": false,
+    "notes": "Temporal query: May 20 evening."
+  },
+  {
+    "id": "eval_23",
+    "query": "What did Priya say about the trip budget in March?",
+    "query_type": "combined",
+    "expected_answer": "Priya stated to cap total expenditure at ₹5,000 per person max.",
+    "expected_message_ids": [
+      "msg_00296"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Priya Patel",
+    "date_range": {
+      "start": "2026-03-01",
+      "end": "2026-03-31"
+    },
+    "unanswerable": false,
+    "notes": "Combined: Sender=Priya, Month=March, Semantic=budget."
+  },
+  {
+    "id": "eval_24",
+    "query": "What resource did Priya share for interview preparation in July?",
+    "query_type": "combined",
+    "expected_answer": "Priya shared the Amazon prep sheet with 75 LeetCode medium questions in the Google drive.",
+    "expected_message_ids": [
+      "msg_03466"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Priya Patel",
+    "date_range": {
+      "start": "2026-07-01",
+      "end": "2026-07-31"
+    },
+    "unanswerable": false,
+    "notes": "Combined: Sender=Priya, Month=July, Semantic=interview prep."
+  },
+  {
+    "id": "eval_25",
+    "query": "What deadline did Ananya announce on May 20?",
+    "query_type": "combined",
+    "expected_answer": "Ananya announced the 11:59 PM GitHub submission deadline for CodeHack.",
+    "expected_message_ids": [
+      "msg_01988"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Ananya Joshi",
+    "date_range": {
+      "start": "2026-05-20",
+      "end": "2026-05-20"
+    },
+    "unanswerable": false,
+    "notes": "Combined: Sender=Ananya, Date=May 20, Semantic=deadline."
+  },
+  {
+    "id": "eval_26",
+    "query": "What did Sneha organize for Priya in August?",
+    "query_type": "combined",
+    "expected_answer": "Sneha reserved a table at Olive Bistro for Priya's surprise birthday party.",
+    "expected_message_ids": [
+      "msg_03889"
+    ],
+    "semantic_gap": true,
+    "target_sender": "Sneha Rao",
+    "date_range": {
+      "start": "2026-08-01",
+      "end": "2026-08-31"
+    },
+    "unanswerable": false,
+    "notes": "Combined: Sender=Sneha, Month=August, Semantic=surprise."
+  },
+  {
+    "id": "eval_27",
+    "query": "What did Neha announce regarding exams in June?",
+    "query_type": "combined",
+    "expected_answer": "Neha announced that the Distributed Systems exam was postponed to June 22.",
+    "expected_message_ids": [
+      "msg_02677"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Neha Gupta",
+    "date_range": {
+      "start": "2026-06-01",
+      "end": "2026-06-30"
+    },
+    "unanswerable": false,
+    "notes": "Combined: Sender=Neha, Month=June, Semantic=exam postponement."
+  },
+  {
+    "id": "eval_28",
+    "query": "Manali kab confirm hua tha?",
+    "query_type": "semantic",
+    "expected_answer": "Manali 14 March ko confirm hua tha.",
+    "expected_message_ids": [
+      "msg_00285"
+    ],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Hinglish query for Manali confirmation."
+  },
+  {
+    "id": "eval_29",
+    "query": "Priya ka max budget kitna tha per head?",
+    "query_type": "attributed",
+    "expected_answer": "Priya ne ₹5,000 per person max budget fix kiya tha.",
+    "expected_message_ids": [
+      "msg_00296"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Priya Patel",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Hinglish query for Priya's budget."
+  },
+  {
+    "id": "eval_30",
+    "query": "Biryani ka bill kitna tha aur kisko paise bhejne the?",
+    "query_type": "attributed",
+    "expected_answer": "Total bill ₹2,400 tha aur Rohan ko ₹300 per person GPay/PhonePe karna tha.",
+    "expected_message_ids": [
+      "msg_02319"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Rohan Mehta",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Hinglish query for Paradise Biryani split."
+  },
+  {
+    "id": "eval_31",
+    "query": "DS ka exam kab postpone hua?",
+    "query_type": "semantic",
+    "expected_answer": "Distributed Systems ka exam June 22 ko postpone hua tha.",
+    "expected_message_ids": [
+      "msg_02677"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Neha Gupta",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Hinglish query for DS exam postponement."
+  },
+  {
+    "id": "eval_32",
+    "query": "whn did aman gt the google offr?",
+    "query_type": "semantic",
+    "expected_answer": "Aman signed the Google internship offer letter on July 8.",
+    "expected_message_ids": [
+      "msg_03129"
+    ],
+    "semantic_gap": false,
+    "target_sender": "Aman Verma",
+    "date_range": null,
+    "unanswerable": false,
+    "notes": "Typo-heavy informal query ('whn', 'gt', 'offr')."
+  },
+  {
+    "id": "eval_33",
+    "query": "What is Rahul's favorite restaurant?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: Rahul never mentions his personal favorite restaurant."
+  },
+  {
+    "id": "eval_34",
+    "query": "Where did Sneha buy her laptop?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: Sneha never discussed where she bought a laptop."
+  },
+  {
+    "id": "eval_35",
+    "query": "What did Vikram score in the GRE exam?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: GRE exam scores were never discussed."
+  },
+  {
+    "id": "eval_36",
+    "query": "What brand of car does Rohan drive?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: Rohan's personal car brand was never mentioned."
+  },
+  {
+    "id": "eval_37",
+    "query": "Who pays for the group's Netflix subscription?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: Netflix subscription is absent from the chat."
+  },
+  {
+    "id": "eval_38",
+    "query": "When did Ananya visit Paris?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: Ananya visiting Paris is completely fabricated."
+  },
+  {
+    "id": "eval_39",
+    "query": "What is Neha's dog's breed and name?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: Neha does not have a pet discussed in chat."
+  },
+  {
+    "id": "eval_40",
+    "query": "What exact stipend amount is Google paying Aman per month?",
+    "query_type": "unanswerable",
+    "expected_answer": null,
+    "expected_message_ids": [],
+    "semantic_gap": false,
+    "target_sender": null,
+    "date_range": null,
+    "unanswerable": true,
+    "notes": "Unanswerable: Aman announced getting the offer, but the exact stipend amount was never disclosed."
+  }
+]

@@ -1,0 +1,84 @@
+# Chat Intelligence — Project Memory & Tracking Document
+
+*Last Updated: 2026-09-08 (Phase 2 In Progress)*
+
+---
+
+## 1. Project Overview & Vision
+
+- **Project Name**: Chat Intelligence ("Search a Group Chat Properly")
+- **Concept**: An AI-powered conversation search and intelligence platform enabling users to search large conversation datasets using natural language and retrieve relevant messages based on semantic meaning, sender, time, and context.
+- **Core Principles**:
+  1. Working functionality over excessive abstraction.
+  2. Clean architecture (Domain Service / Repository / Provider boundaries).
+  3. Testability with automated suites and benchmark evaluation.
+  4. Grounded AI answers with ZERO hallucination (explicit fallback if evidence is absent).
+  5. Interview explainability and future extensibility (WhatsApp/Telegram/Discord, PostgreSQL, Qdrant).
+
+---
+
+## 2. Technical Stack Specifications
+
+- **Frontend**: React 19, Vite, TypeScript, Tailwind CSS v4 (`@tailwindcss/vite`), Axios, Lucide React
+- **Backend**: Python 3.13, FastAPI, Uvicorn, Pydantic v2, Pydantic-Settings
+- **Data Storage**: SQLite (`backend/data/chat_intelligence.db`)
+- **Vector Search**: FAISS (`faiss-cpu`)
+- **Embeddings**: `intfloat/multilingual-e5-small` (Multilingual E5 supporting English, Hindi, Hinglish, typos)
+- **LLM Layer**: Pluggable provider abstraction (`LLMProvider`: Gemini, OpenAI, Mock for offline tests)
+- **Testing**: Pytest, Pytest-Asyncio, HTTPX
+
+---
+
+## 3. Phase Roadmap & Execution Status
+
+| Phase | Description | Status | Milestone Details |
+|---|---|---|---|
+| **Phase 0** | Architecture & Environment Check | ✅ Completed | Python 3.13, Node 22, npm 10 verified; folder skeleton, `.gitignore`, `.env.example`, `docs/architecture.md` created. |
+| **Phase 1** | Project Foundation | ✅ Completed | FastAPI backend + health API (`GET /api/health`), React Vite Tailwind frontend with live connectivity, Pytest passing, Commit `fbd24f3`. |
+| **Phase 2** | Data Model & Dataset | ✅ Completed | Domain models, 4,300 messages across 8 participants, 6-month timeline, SQLite repo, 40 benchmark queries, Commit milestone. |
+| **Phase 3** | Embedding & Vector Index | ⏳ Pending | `EmbeddingProvider` (`multilingual-e5-small`), FAISS vector store, indexing script, vector persistence. |
+| **Phase 4** | Semantic Search | ⏳ Pending | Query vectorization, FAISS retrieval, Top-K ranking, similarity scoring, search tests. |
+| **Phase 5** | Query Understanding & Filters | ⏳ Pending | Intent extraction, sender detection, temporal constraint extraction, combined filters. |
+| **Phase 6** | Ranking & Context | ⏳ Pending | Transparent hybrid scoring, context window expansion ($\pm 3$ messages), matched message highlighting. |
+| **Phase 7** | Grounded AI Answers | ⏳ Pending | `LLMProvider` abstraction, citation-based grounded synthesis, refusal on unanswerable queries. |
+| **Phase 8** | React UI | ⏳ Pending | Production search interface, filter chips, AI answer card, result list, interactive context viewer. |
+| **Phase 9** | AI Summaries | ⏳ Pending | Topic-based summaries and decision extraction bonus feature. |
+| **Phase 10** | Evaluation & Testing | ⏳ Pending | Benchmark run across all 40 queries measuring accuracy, recall, and hallucination rejection. |
+| **Phase 11** | Polish | ⏳ Pending | UI/UX refinements, loading/empty states, error boundaries, README updates, screenshots. |
+| **Phase 12** | Deployment | ⏳ Pending | Production readiness review and optional public deployment. |
+
+---
+
+## 4. Key Architectural Decisions & Invariants
+
+1. **Provider Independence**:
+   - Embedding generation and LLM calls are isolated behind abstract interfaces. No core search code directly calls Gemini or OpenAI without going through `LLMProvider`.
+2. **Strict Grounding (Anti-Hallucination)**:
+   - When evidence is insufficient or when evaluating unanswerable queries, the system must clearly state that the answer cannot be determined from the conversation.
+3. **Context-Aware Retrieval**:
+   - Group chat messages are heavily contextual ("yes", "done", "let's book it"). Retrieval returns the target message plus surrounding messages ($\pm 3$) for conversational continuity.
+4. **Multilingual & Hinglish Support**:
+   - The embedding model (`intfloat/multilingual-e5-small`) and query analyzer are chosen specifically to support Latin-script Hindi, English, and code-mixed colloquial chat patterns.
+5. **Git Commit Discipline**:
+   - Meaningful milestone commits after every major phase. No giant single commits.
+
+---
+
+## 5. Completed Milestones Log
+
+- **2026-09-08 — Phase 0 Complete**:
+  - Validated Python 3.13, Node 22, npm 10.
+  - Verified wheel compatibility for `faiss-cpu` and `torch`.
+  - Created directory layout, architecture document, and git configuration.
+- **2026-09-08 — Phase 1 Complete**:
+  - Implemented FastAPI backend with CORS and health endpoint.
+  - Built Vite React TypeScript frontend with Tailwind CSS v4 and Lucide React icons.
+  - Created automated backend tests (`test_health.py` passing).
+  - Git Commit `fbd24f3daa7da656ffea556a91c35b090a3fe3bd`.
+- **2026-09-08 — Phase 2 Complete**:
+  - Defined Pydantic v2 schemas: `Conversation`, `Message`, `MessageWithContext`, `EvaluationQuery`.
+  - Built `SQLiteRepository` with indexes on `(conversation_id, sequence_num)`, `timestamp`, and `sender_name`.
+  - Created generator `scripts/generate_dataset.py` generating 4,300 messages across 8 participants spanning March 1 to August 30, 2026 (183 days).
+  - Included realistic mix of English, Hindi Latin-script, Hinglish code-mixing, typos, and contextual reactions.
+  - Authored 40 benchmark evaluation queries (`scripts/evaluation_queries.json`) including 8 semantic gap queries, 8 unanswerable queries, and combined sender/date queries.
+  - Verified with automated tests in `backend/tests/test_dataset.py` (5/5 pytest passing).
