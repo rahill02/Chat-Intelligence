@@ -18,6 +18,9 @@ async def search_messages(
         response = search_service.search(
             query=request.query,
             conversation_id=request.conversation_id,
+            sender=request.sender,
+            start_date=request.start_date,
+            end_date=request.end_date,
             top_k=request.top_k,
             min_score=request.min_score
         )

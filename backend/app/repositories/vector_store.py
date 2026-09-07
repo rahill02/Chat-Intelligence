@@ -41,6 +41,11 @@ class BaseVectorStore(ABC):
         pass
 
     @abstractmethod
+    def get_vector(self, m_id: str) -> Optional[np.ndarray]:
+        """Returns the stored vector for a message ID if present."""
+        pass
+
+    @abstractmethod
     def count(self) -> int:
         """Returns number of indexed vectors."""
         pass
@@ -153,6 +158,15 @@ class FAISSVectorStore(BaseVectorStore):
         self.id_to_idx = {v: k for k, v in self.idx_to_id.items()}
         self.metadata_store = meta_payload.get("metadata_store", {})
         return True
+
+    def get_vector(self, m_id: str) -> Optional[np.ndarray]:
+        if self._index is not None and m_id in self.id_to_idx:
+            idx = self.id_to_idx[m_id]
+            try:
+                return self._index.reconstruct(idx)
+            except Exception:
+                return None
+        return None
 
     def count(self) -> int:
         return self._index.ntotal if self._index else 0

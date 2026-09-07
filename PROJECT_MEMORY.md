@@ -1,6 +1,6 @@
 # Chat Intelligence — Project Memory & Tracking Document
 
-_Last Updated: 2026-09-08 (Phase 2 In Progress)_
+_Last Updated: 2026-09-08 (Phase 5 Complete)_
 
 ---
 
@@ -38,7 +38,7 @@ _Last Updated: 2026-09-08 (Phase 2 In Progress)_
 | **Phase 2**  | Data Model & Dataset             | ✅ Completed | Domain models, 4,300 messages across 8 participants, 6-month timeline, SQLite repo, 40 benchmark queries, Commit milestone.              |
 | **Phase 3**  | Embedding & Vector Index         | ✅ Completed | `EmbeddingProvider` (`multilingual-e5-small` & mock), FAISS VectorStore (`IndexFlatIP`), 4,300 messages embedded, index persisted.       |
 | **Phase 4**  | Semantic Search                  | ✅ Completed | `SearchService`, query vectorization, candidate hydration from SQLite, `POST /api/search` endpoint, tests passing.                       |
-| **Phase 5**  | Query Understanding & Filters    | ⏳ Pending   | Intent extraction, sender detection, temporal constraint extraction, combined filters.                                                   |
+| **Phase 5**  | Query Understanding & Filters    | ✅ Completed | `QueryAnalyzer` (sender attribution, temporal bounds, intent classification), hybrid retrieval, 17/17 tests passing.                     |
 | **Phase 6**  | Ranking & Context                | ⏳ Pending   | Transparent hybrid scoring, context window expansion ($\pm 3$ messages), matched message highlighting.                                   |
 | **Phase 7**  | Grounded AI Answers              | ⏳ Pending   | `LLMProvider` abstraction, citation-based grounded synthesis, refusal on unanswerable queries.                                           |
 | **Phase 8**  | React UI                         | ⏳ Pending   | Production search interface, filter chips, AI answer card, result list, interactive context viewer.                                      |
@@ -94,3 +94,11 @@ _Last Updated: 2026-09-08 (Phase 2 In Progress)_
   - Added singleton provider and index loader (`get_search_service`).
   - Created REST endpoint `POST /api/search` with input validation and latency tracking.
   - Automated tests in `backend/tests/test_search.py` (11/11 backend pytest passing).
+- **2026-09-08 — Phase 5 Complete**:
+  - Created `QueryAnalyzer` (`backend/app/services/query_analyzer.py`) detecting sender attribution across all 8 participants (both English and Hinglish patterns like "Priya ne kya bola"), temporal expressions (specific dates "March 14", months "March", relative windows "last month"), and intent classification (`semantic`, `attributed`, `temporal`, `combined`).
+  - Implemented smart query cleaning preserving semantic action verbs while stripping incidental date tokens to avoid matching unrelated casual date references.
+  - Added vector reconstruction `reconstruct(idx)` in `FAISSVectorStore` and `BaseVectorStore` to calculate cosine similarities on metadata-filtered SQLite candidate sets without re-embedding.
+  - Built hybrid candidate retrieval in `SearchService` marrying FAISS top-k vector candidates with SQLite filtered messages.
+  - Automated test suite `backend/tests/test_query_analyzer.py` validating sender detection, temporal parsing, intent classification, and end-to-end filtered search.
+  - All 17/17 tests passing across the backend test suite.
+
