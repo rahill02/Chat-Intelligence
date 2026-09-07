@@ -1,78 +1,57 @@
-import { useState, useEffect, useCallback } from 'react';
-import {
-  MessageSquare,
-  Activity,
-  Layers,
-  Sparkles,
-  Inbox,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  TrendingUp,
-  FileText,
-} from 'lucide-react';
-import { checkHealth, searchMessages, getAnswer } from './services/api';
-import { SearchBar } from './components/SearchBar';
-import { FilterBar } from './components/FilterBar';
-import { GroundedAnswerCard } from './components/GroundedAnswerCard';
-import { SearchResultCard } from './components/SearchResultCard';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { AlertCircle } from 'lucide-react';
+import { searchMessages, getAnswer } from './services/api';
+import { Sidebar } from './components/Sidebar';
+import { TopBar } from './components/TopBar';
+import { SearchHeader } from './components/SearchHeader';
+import { SearchFilters } from './components/SearchFilters';
+import { AIAnswerCard } from './components/AIAnswerCard';
+import { ConversationThread } from './components/ConversationThread';
+import { SearchInsightsPanel } from './components/SearchInsightsPanel';
 import { ContextModal } from './components/ContextModal';
 import { SummaryModal } from './components/SummaryModal';
-import type { HealthStatus, SearchResponse, AnswerResponse } from './types';
+import type { SearchResponse, AnswerResponse, SearchResultItem } from './types';
 
 export default function App() {
-  const [health, setHealth] = useState<HealthStatus | null>(null);
-  const [healthLoading, setHealthLoading] = useState<boolean>(true);
-  const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
+  // Navigation & Conversation State
+  const [activeNav, setActiveNav] = useState<string>('Search');
+  const [activeConversation, setActiveConversation] = useState<string>('College Friends');
+  const [insightsPanelOpen, setInsightsPanelOpen] = useState<boolean>(true);
 
-  // Search & Filter State
-  const [query, setQuery] = useState<string>('');
+  // Search & Filter State (Default initialized to match reference query)
+  const [query, setQuery] = useState<string>('What did Priya say about the budget?');
+  const [activeSearchQuery, setActiveSearchQuery] = useState<string>('What did Priya say about the budget?');
   const [sender, setSender] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('Relevance');
   const [topK, setTopK] = useState<number>(10);
-  const [generateAnswer, setGenerateAnswer] = useState<boolean>(true);
 
-  // Results & UI State
+  // Results & Loading State
   const [searchResults, setSearchResults] = useState<SearchResponse | null>(null);
   const [answerData, setAnswerData] = useState<AnswerResponse | null>(null);
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
   const [answerLoading, setAnswerLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Context Modal State
+  // Modals
   const [activeContextMessageId, setActiveContextMessageId] = useState<string | null>(null);
+  const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
 
-  const fetchHealth = async () => {
-    setHealthLoading(true);
-    try {
-      const data = await checkHealth();
-      setHealth(data);
-    } catch {
-      setHealth(null);
-    } finally {
-      setHealthLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchHealth();
-  }, []);
-
+  // Core Search Execution (Preserving all API logic and query flows)
   const handleSearch = useCallback(
     async (overrideQuery?: string) => {
-      const activeQuery = (overrideQuery ?? query).trim();
-      if (!activeQuery) return;
+      const targetQuery = (overrideQuery ?? query).trim();
+      if (!targetQuery) return;
 
       setSearchLoading(true);
       setError(null);
-      setSearchResults(null);
-      setAnswerData(null);
+      setActiveSearchQuery(targetQuery);
 
       try {
-        // 1. Vector & Filter Search
+        // 1. Vector & Hybrid Candidate Search
         const searchPromise = searchMessages({
-          query: activeQuery,
+          query: targetQuery,
           sender: sender || null,
           start_date: startDate ? `${startDate}T00:00:00Z` : null,
           end_date: endDate ? `${endDate}T23:59:59Z` : null,
@@ -81,31 +60,26 @@ export default function App() {
           context_window: 3,
         });
 
-        // 2. Parallel Grounded QA if toggled
-        let answerPromise: Promise<AnswerResponse> | null = null;
-        if (generateAnswer) {
-          setAnswerLoading(true);
-          answerPromise = getAnswer({
-            query: activeQuery,
-            sender: sender || null,
-            start_date: startDate ? `${startDate}T00:00:00Z` : null,
-            end_date: endDate ? `${endDate}T23:59:59Z` : null,
-            top_k: Math.min(topK, 8),
-          });
-        }
+        // 2. Grounded AI QA Generation
+        setAnswerLoading(true);
+        const answerPromise = getAnswer({
+          query: targetQuery,
+          sender: sender || null,
+          start_date: startDate ? `${startDate}T00:00:00Z` : null,
+          end_date: endDate ? `${endDate}T23:59:59Z` : null,
+          top_k: Math.min(topK, 8),
+        });
 
         const res = await searchPromise;
         setSearchResults(res);
 
-        if (answerPromise) {
-          try {
-            const aRes = await answerPromise;
-            setAnswerData(aRes);
-          } catch (aErr) {
-            console.error('AI answer generation error:', aErr);
-          } finally {
-            setAnswerLoading(false);
-          }
+        try {
+          const aRes = await answerPromise;
+          setAnswerData(aRes);
+        } catch (aErr) {
+          console.error('AI answer generation error:', aErr);
+        } finally {
+          setAnswerLoading(false);
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -117,219 +91,149 @@ export default function App() {
         setSearchLoading(false);
       }
     },
-    [query, sender, startDate, endDate, topK, generateAnswer]
+    [query, sender, startDate, endDate, topK]
   );
 
+  // Auto-search on initial mount so reference state renders immediately with real data
+  useEffect(() => {
+    handleSearch('What did Priya say about the budget?');
+  }, []);
+
+  // Re-trigger search when sender, dates, or topK filters change
+  useEffect(() => {
+    if (activeSearchQuery) {
+      handleSearch(activeSearchQuery);
+    }
+  }, [sender, startDate, endDate, topK]);
+
+  // Handle example query selection
   const handleSelectExample = (exQuery: string) => {
     setQuery(exQuery);
     handleSearch(exQuery);
   };
 
+  // Reset filter state
   const handleResetFilters = () => {
     setSender('');
     setStartDate('');
     setEndDate('');
+    setSortBy('Relevance');
     setTopK(10);
   };
 
+  // Sorted Results based on selected Sort filter
+  const displayedResults: SearchResultItem[] = useMemo(() => {
+    if (!searchResults?.results) return [];
+    const list = [...searchResults.results];
+    if (sortBy === 'Newest first') {
+      return list.sort(
+        (a, b) => new Date(b.message.timestamp).getTime() - new Date(a.message.timestamp).getTime()
+      );
+    }
+    if (sortBy === 'Oldest first') {
+      return list.sort(
+        (a, b) => new Date(a.message.timestamp).getTime() - new Date(b.message.timestamp).getTime()
+      );
+    }
+    // Default 'Relevance' retains hybrid score order
+    return list;
+  }, [searchResults, sortBy]);
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-white">
-      {/* Navigation Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-tr from-indigo-600 to-sky-500 p-2 rounded-xl text-white shadow-md shadow-indigo-500/20">
-              <MessageSquare className="w-5 h-5" />
-            </div>
-            <div>
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-                Chat Intelligence
-              </span>
-              <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 uppercase tracking-wider">
-                Assessment
-              </span>
-            </div>
-          </div>
+    <div className="flex h-screen w-screen overflow-hidden bg-[#F9FAFB] text-gray-900 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+      {/* 1. Left Sidebar */}
+      <Sidebar
+        activeNav={activeNav}
+        onSelectNav={(nav) => {
+          setActiveNav(nav);
+          if (nav === 'Summaries') setSummaryModalOpen(true);
+        }}
+        onOpenSummaries={() => setSummaryModalOpen(true)}
+        activeConversation={activeConversation}
+        onSelectConversation={(conv) => setActiveConversation(conv)}
+      />
 
-          <div className="flex items-center space-x-3 text-xs">
-            <button
-              type="button"
-              onClick={() => setSummaryModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 hover:from-indigo-600/30 hover:to-purple-600/30 border border-indigo-500/40 text-indigo-300 hover:text-white font-medium transition cursor-pointer active:scale-95 shadow-sm"
-            >
-              <FileText className="w-3.5 h-3.5 text-indigo-400" />
-              <span>AI Summarizer</span>
-            </button>
+      {/* 2. Center Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        <TopBar
+          currentSection={activeNav}
+          conversationName={activeConversation}
+        />
 
-            <div className="flex items-center space-x-2 text-slate-400 bg-slate-850 px-3 py-1.5 rounded-xl border border-slate-800">
-              <Activity
-                className={`w-3.5 h-3.5 ${
-                  health?.status === 'healthy' ? 'text-emerald-400 animate-pulse' : 'text-amber-400'
-                }`}
-              />
-              <span className="hidden sm:inline">API Gateway:</span>
-              {healthLoading ? (
-                <span className="text-amber-400">Checking...</span>
-              ) : health?.status === 'healthy' ? (
-                <span className="text-emerald-400 font-semibold flex items-center gap-1">Online</span>
-              ) : (
-                <span className="text-rose-400 font-semibold">Offline</span>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* Search Bar Section */}
-        <section className="space-y-4">
-          <SearchBar
-            query={query}
-            setQuery={setQuery}
-            onSearch={() => handleSearch()}
-            loading={searchLoading}
-            generateAnswer={generateAnswer}
-            setGenerateAnswer={setGenerateAnswer}
-            onSelectExample={handleSelectExample}
-          />
-
-          <FilterBar
-            sender={sender}
-            setSender={setSender}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-            topK={topK}
-            setTopK={setTopK}
-            queryAnalysis={searchResults?.query_analysis}
-            onReset={handleResetFilters}
-          />
-        </section>
-
-        {/* Error Toast */}
-        {error && (
-          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Grounded AI Answer Card */}
-        {(generateAnswer || answerData) && (
-          <section>
-            <GroundedAnswerCard
-              answerData={answerData}
-              loading={answerLoading}
-              onOpenContext={(id) => setActiveContextMessageId(id)}
+        {/* Scrollable Center Container */}
+        <main className="flex-1 overflow-y-auto px-6 lg:px-12 py-8">
+          <div className="max-w-3xl mx-auto space-y-6">
+            {/* Search Input Section */}
+            <SearchHeader
+              query={query}
+              setQuery={setQuery}
+              onSearch={handleSearch}
+              loading={searchLoading}
+              activeSearchQuery={activeSearchQuery}
+              onSelectExample={handleSelectExample}
             />
-          </section>
-        )}
 
-        {/* Results Stream */}
-        {searchResults && (
-          <section className="space-y-4">
-            <div className="flex items-center justify-between text-xs text-slate-400 px-1 border-b border-slate-850 pb-2">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-200">
-                  {searchResults.total_matches} messages retrieved
-                </span>
-                <span>•</span>
-                <span className="text-sky-400 flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" />
-                  Hybrid Ranked
-                </span>
-              </div>
-              <div className="flex items-center gap-1 text-[11px] text-slate-500">
-                <Clock className="w-3 h-3" />
-                <span>Search latency: {searchResults.latency_ms}ms</span>
-              </div>
-            </div>
+            {/* Filter Pills */}
+            <SearchFilters
+              conversation={activeConversation}
+              setConversation={setActiveConversation}
+              sender={sender}
+              setSender={setSender}
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              onReset={handleResetFilters}
+            />
 
-            {searchResults.results.length === 0 ? (
-              <div className="py-16 text-center rounded-2xl border border-slate-850 bg-slate-900/40 p-8">
-                <div className="w-12 h-12 rounded-2xl bg-slate-800 text-slate-500 flex items-center justify-center mx-auto mb-3">
-                  <Inbox className="w-6 h-6" />
-                </div>
-                <h3 className="text-sm font-semibold text-slate-300">No matching messages</h3>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
-                  No messages matched your query or filter criteria. Try broadening your dates or clearing speaker filters.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {searchResults.results.map((item) => (
-                  <SearchResultCard
-                    key={item.message.id}
-                    item={item}
-                    onOpenContext={(id) => setActiveContextMessageId(id)}
-                  />
-                ))}
+            {/* Error Message */}
+            {error && (
+              <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                <span>{error}</span>
               </div>
             )}
-          </section>
-        )}
 
-        {/* Initial Welcome / Hero State (When no search has run) */}
-        {!searchResults && !searchLoading && (
-          <section className="py-12 flex flex-col items-center justify-center text-center space-y-6">
-            <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500/20 to-sky-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-xl shadow-indigo-500/5">
-              <Layers className="w-8 h-8" />
-            </div>
+            {/* Grounded AI Answer Card */}
+            <AIAnswerCard
+              answerData={answerData}
+              loading={answerLoading}
+              totalSourcesCount={searchResults?.results?.length ?? 4}
+              onViewSources={() => {
+                if (searchResults?.results?.[0]) {
+                  setActiveContextMessageId(searchResults.results[0].message.id);
+                }
+              }}
+            />
 
-            <div className="max-w-xl space-y-2">
-              <h2 className="text-xl font-bold text-white tracking-tight">
-                Search 4,300+ Group Chat Messages Properly
-              </h2>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Powered by Multilingual E5 vector embeddings, SQLite indexing, explainable hybrid ranking, and strict anti-hallucination grounded answers.
-              </p>
-            </div>
+            {/* Relevant Conversation Stream */}
+            <ConversationThread
+              conversationName={activeConversation}
+              results={displayedResults}
+              onOpenContext={(messageId) => setActiveContextMessageId(messageId)}
+            />
+          </div>
+        </main>
+      </div>
 
-            {/* Quick Feature Badges */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl w-full text-xs text-left">
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
-                <div className="font-semibold text-indigo-300 mb-1 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Semantic & Gap Search</span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Handles vocabulary mismatch, typos, and Hinglish code-mixing seamlessly.
-                </p>
-              </div>
+      {/* 3. Right Search Insights Panel */}
+      {insightsPanelOpen && (
+        <SearchInsightsPanel
+          searchResults={searchResults}
+          onClose={() => setInsightsPanelOpen(false)}
+          onSummarizeTopic={() => setSummaryModalOpen(true)}
+        />
+      )}
 
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
-                <div className="font-semibold text-sky-300 mb-1 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Sender & Time Filters</span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Detects participants and temporal bounds ("March 14", "last month") automatically.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
-                <div className="font-semibold text-emerald-300 mb-1 flex items-center gap-1.5">
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  <span>Context Threads (±3)</span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Short replies like "yes" and "done" are grounded in their chronological thread.
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
-      </main>
-
-      {/* Context Timeline Modal */}
+      {/* Reusable Context Modal */}
       <ContextModal
         messageId={activeContextMessageId}
         onClose={() => setActiveContextMessageId(null)}
       />
 
-      {/* AI Topic Summary Modal */}
+      {/* Reusable AI Summary Modal */}
       <SummaryModal
         isOpen={summaryModalOpen}
         onClose={() => setSummaryModalOpen(false)}
@@ -338,11 +242,6 @@ export default function App() {
           setActiveContextMessageId(id);
         }}
       />
-
-      {/* Footer */}
-      <footer className="border-t border-slate-800/80 py-4 text-center text-xs text-slate-500 bg-slate-950">
-        Chat Intelligence Platform • 4,300 Messages • 8 Participants • 6 Months
-      </footer>
     </div>
   );
 }
