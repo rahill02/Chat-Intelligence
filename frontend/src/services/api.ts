@@ -6,6 +6,8 @@ import type {
   AnswerRequest,
   AnswerResponse,
   MessageWithContext,
+  SummaryRequest,
+  SummaryResponse,
 } from '../types';
 
 const api = axios.create({
@@ -41,4 +43,15 @@ export const getMessageContext = async (
   return response.data;
 };
 
+export const getSummary = async (request: SummaryRequest): Promise<SummaryResponse> => {
+  const response = await api.post<SummaryResponse>('/summarize', request);
+  return response.data;
+};
+
+export const getSuggestedTopics = async (): Promise<string[]> => {
+  const response = await api.get<string[]>('/topics');
+  return response.data;
+};
+
 export default api;
+

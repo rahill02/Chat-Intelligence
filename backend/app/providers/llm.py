@@ -82,13 +82,35 @@ Provide a grounded response with citations in the required JSON format:"""
         messages: List[dict]
     ) -> dict:
         msg_text = "\n".join([
-            f"- [{m.get('id')}] {m.get('sender_name') or m.get('sender')}: {m.get('content')}"
+            f"- [{m.get('id')}] {m.get('sender_name') or m.get('sender')} ({m.get('timestamp')}): {m.get('content')}"
             for m in messages
         ])
-        user_prompt = f"""Summarize the discussion on topic: '{topic}' from these chat messages:
+        user_prompt = f"""Summarize the group chat discussion on topic: '{topic}' from these messages:
 {msg_text}
 
-Return valid JSON with keys: "topic", "summary", "key_decisions", "action_items", "cited_message_ids"."""
+Return valid JSON adhering strictly to this schema:
+{{
+  "topic": "{topic}",
+  "overview": "Concise 2-3 sentence overview of the conversation thread",
+  "key_decisions": [
+    {{
+      "decision": "What was agreed or decided",
+      "decided_by": "Participant name",
+      "timestamp": "ISO timestamp if available",
+      "message_id": "Message ID if available"
+    }}
+  ],
+  "action_items": [
+    {{
+      "task": "Actionable task",
+      "assignee": "Person assigned or null",
+      "deadline": "Target date or null",
+      "message_id": "Message ID if available"
+    }}
+  ],
+  "timeline_dates": ["2026-03-14", "2026-03-20"],
+  "cited_message_ids": ["msg_00275"]
+}}"""
 
         payload = {
             "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
@@ -158,14 +180,40 @@ class OpenAILLMProvider(BaseLLMProvider):
         messages: List[dict]
     ) -> dict:
         msg_text = "\n".join([
-            f"- [{m.get('id')}] {m.get('sender_name') or m.get('sender')}: {m.get('content')}"
+            f"- [{m.get('id')}] {m.get('sender_name') or m.get('sender')} ({m.get('timestamp')}): {m.get('content')}"
             for m in messages
         ])
+        user_prompt = f"""Summarize the discussion on topic: '{topic}' from these chat messages:
+{msg_text}
+
+Return valid JSON adhering strictly to this schema:
+{{
+  "topic": "{topic}",
+  "overview": "Concise 2-3 sentence overview of the conversation thread",
+  "key_decisions": [
+    {{
+      "decision": "What was agreed or decided",
+      "decided_by": "Participant name",
+      "timestamp": "ISO timestamp if available",
+      "message_id": "Message ID if available"
+    }}
+  ],
+  "action_items": [
+    {{
+      "task": "Actionable task",
+      "assignee": "Person assigned or null",
+      "deadline": "Target date or null",
+      "message_id": "Message ID if available"
+    }}
+  ],
+  "timeline_dates": ["2026-03-14", "2026-03-20"],
+  "cited_message_ids": ["msg_00275"]
+}}"""
         payload = {
             "model": self.model_name,
             "messages": [
-                {"role": "system", "content": "Return a JSON summary with keys: topic, summary, key_decisions, action_items, cited_message_ids."},
-                {"role": "user", "content": f"Topic: {topic}\n\nMessages:\n{msg_text}"}
+                {"role": "system", "content": "You are Chat Intelligence. Summarize the conversation accurately and return structured JSON."},
+                {"role": "user", "content": user_prompt}
             ],
             "response_format": {"type": "json_object"},
             "temperature": 0.2
@@ -247,7 +295,6 @@ class MockLLMProvider(BaseLLMProvider):
         msg_id = top_ev.get("id", "msg_00000")
 
         # Synthesize clear answer text citing message ID
-        # Extract meaningful sentence from content
         clean_content = content.replace("\n", " ").strip()
         answer = f"According to {sender} [{msg_id}], \"{clean_content}\""
 
@@ -263,14 +310,154 @@ class MockLLMProvider(BaseLLMProvider):
         topic: str,
         messages: List[dict]
     ) -> dict:
-        cited_ids = [m.get("id") for m in messages[:5] if m.get("id")]
-        return {
-            "topic": topic,
-            "summary": f"Discussion regarding {topic} covered by {len(messages)} messages.",
-            "key_decisions": [f"Key decision reached for {topic}."],
-            "action_items": ["Review notes and follow up."],
-            "cited_message_ids": cited_ids
-        }
+        t_lower = topic.lower()
+        msg_ids = [m.get("id") for m in messages if m.get("id")]
+
+        if "manali" in t_lower or "trip" in t_lower or "vacation" in t_lower:
+            return {
+                "topic": topic or "Trip to Manali",
+                "overview": "The group planned a 5-day mountain vacation to Manali, reaching consensus on budget limits, transport by Volvo bus, and hotel accommodations.",
+                "key_decisions": [
+                    {
+                        "decision": "Confirmed Manali as the final vacation destination",
+                        "decided_by": "Rahul Sharma",
+                        "timestamp": "2026-03-14T11:00:00Z",
+                        "message_id": "msg_00275"
+                    },
+                    {
+                        "decision": "Enforced strict budget cap of ₹5,000 per person maximum",
+                        "decided_by": "Priya Patel",
+                        "timestamp": "2026-03-14T11:30:00Z",
+                        "message_id": "msg_00290"
+                    },
+                    {
+                        "decision": "Selected Snow Valley Resorts as the preferred lodging",
+                        "decided_by": "Sneha Rao",
+                        "timestamp": "2026-03-15T14:10:00Z",
+                        "message_id": "msg_00390"
+                    },
+                    {
+                        "decision": "Travel via Volvo semi-sleeper bus from Majnu Ka Tila",
+                        "decided_by": "Vikram Singh",
+                        "timestamp": "2026-03-16T18:00:00Z",
+                        "message_id": "msg_00449"
+                    }
+                ],
+                "action_items": [
+                    {
+                        "task": "Book hotel rooms at Snow Valley Resorts",
+                        "assignee": "Rahul Sharma",
+                        "deadline": "2026-03-20",
+                        "message_id": "msg_00390"
+                    },
+                    {
+                        "task": "Reserve 8 seats on Volvo bus from Delhi",
+                        "assignee": "Vikram Singh",
+                        "deadline": "2026-03-22",
+                        "message_id": "msg_00449"
+                    },
+                    {
+                        "task": "Maintain unified group expense pool and split balances",
+                        "assignee": "Priya Patel",
+                        "deadline": "2026-03-25",
+                        "message_id": "msg_00290"
+                    }
+                ],
+                "timeline_dates": ["2026-03-14", "2026-03-15", "2026-03-16", "2026-03-25"],
+                "cited_message_ids": ["msg_00275", "msg_00290", "msg_00390", "msg_00449"]
+            }
+
+        elif "exam" in t_lower or "ds" in t_lower or "study" in t_lower or "data structures" in t_lower:
+            return {
+                "topic": topic or "Data Structures & Algorithms Exam",
+                "overview": "The group coordinated preparation for the university DSA exam, tracking schedule adjustments and dividing practice topics across study sessions.",
+                "key_decisions": [
+                    {
+                        "decision": "DSA final exam confirmed postponed to April 28",
+                        "decided_by": "Neha Gupta",
+                        "timestamp": "2026-04-10T09:15:00Z",
+                        "message_id": "msg_01120"
+                    },
+                    {
+                        "decision": "Organize peer review sessions focusing on Trees, Graphs, and DP",
+                        "decided_by": "Aman Verma",
+                        "timestamp": "2026-04-12T16:00:00Z",
+                        "message_id": "msg_01205"
+                    }
+                ],
+                "action_items": [
+                    {
+                        "task": "Compile and share lecture notes on Graph algorithms",
+                        "assignee": "Neha Gupta",
+                        "deadline": "2026-04-20",
+                        "message_id": "msg_01120"
+                    },
+                    {
+                        "task": "Host practice problem solving session on dynamic programming",
+                        "assignee": "Aman Verma",
+                        "deadline": "2026-04-22",
+                        "message_id": "msg_01205"
+                    }
+                ],
+                "timeline_dates": ["2026-04-10", "2026-04-12", "2026-04-28"],
+                "cited_message_ids": ["msg_01120", "msg_01205"]
+            }
+
+        elif "hackathon" in t_lower or "neuralbyte" in t_lower or "project" in t_lower:
+            return {
+                "topic": topic or "NeuralByte Hackathon Preparation",
+                "overview": "The squad registered for the 36-hour hackathon as team NeuralByte, decided on a FastAPI and React tech stack, and distributed system roles.",
+                "key_decisions": [
+                    {
+                        "decision": "Registered the hackathon team under the moniker NeuralByte",
+                        "decided_by": "Ananya Joshi",
+                        "timestamp": "2026-05-12T10:00:00Z",
+                        "message_id": "msg_01861"
+                    },
+                    {
+                        "decision": "Selected FastAPI for backend and React with Vite for frontend",
+                        "decided_by": "Aman Verma",
+                        "timestamp": "2026-05-13T14:30:00Z",
+                        "message_id": "msg_01940"
+                    }
+                ],
+                "action_items": [
+                    {
+                        "task": "Bootstrap GitHub repository and deploy staging pipeline on Render",
+                        "assignee": "Aman Verma",
+                        "deadline": "2026-05-15",
+                        "message_id": "msg_01940"
+                    },
+                    {
+                        "task": "Create UI wireframes and interactive component states",
+                        "assignee": "Sneha Rao",
+                        "deadline": "2026-05-16",
+                        "message_id": "msg_01980"
+                    }
+                ],
+                "timeline_dates": ["2026-05-12", "2026-05-13", "2026-05-20"],
+                "cited_message_ids": ["msg_01861", "msg_01940"]
+            }
+
+        else:
+            # Dynamic fallback extracting from messages
+            first_few = messages[:5] if messages else []
+            decisions = []
+            for m in first_few[:2]:
+                decisions.append({
+                    "decision": f"Discussed: {m.get('content', '')[:60]}...",
+                    "decided_by": m.get("sender_name") or m.get("sender") or "Group",
+                    "timestamp": m.get("timestamp"),
+                    "message_id": m.get("id")
+                })
+            return {
+                "topic": topic or "Conversation Overview",
+                "overview": f"Discussion thread spanning {len(messages)} messages regarding {topic or 'group activities'}.",
+                "key_decisions": decisions or [{"decision": "Agreed on project progress", "decided_by": "Group", "timestamp": None, "message_id": None}],
+                "action_items": [{"task": "Review conversation notes and follow up", "assignee": "Group", "deadline": None, "message_id": None}],
+                "timeline_dates": [m.get("timestamp", "").split("T")[0] for m in first_few if m.get("timestamp")],
+                "cited_message_ids": msg_ids[:4]
+            }
 
 
 def get_llm_provider() -> BaseLLMProvider:

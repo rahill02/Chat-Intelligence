@@ -104,3 +104,37 @@ export interface AnswerResponse {
   search_type: string;
   latency_ms: number;
 }
+
+export interface DecisionItem {
+  decision: string;
+  decided_by: string;
+  timestamp?: string | null;
+  message_id?: string | null;
+}
+
+export interface ActionItem {
+  task: string;
+  assignee?: string | null;
+  deadline?: string | null;
+  message_id?: string | null;
+}
+
+export interface SummaryRequest {
+  topic?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  conversation_id?: string | null;
+  max_messages?: number;
+}
+
+export interface SummaryResponse {
+  topic: string;
+  overview: string;
+  key_decisions: DecisionItem[];
+  action_items: ActionItem[];
+  timeline_dates: string[];
+  message_count: number;
+  sources_used: string[];
+  latency_ms: number;
+}
+

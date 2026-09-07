@@ -4,6 +4,7 @@ from backend.app.core.config import settings
 from backend.app.api.health import router as health_router
 from backend.app.api.search import router as search_router
 from backend.app.api.answer import router as answer_router
+from backend.app.api.summary import router as summary_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -24,6 +25,7 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(search_router)
 app.include_router(answer_router)
+app.include_router(summary_router)
 
 
 @app.get("/")

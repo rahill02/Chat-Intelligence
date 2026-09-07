@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   AlertCircle,
   TrendingUp,
+  FileText,
 } from 'lucide-react';
 import { checkHealth, searchMessages, getAnswer } from './services/api';
 import { SearchBar } from './components/SearchBar';
@@ -16,11 +17,13 @@ import { FilterBar } from './components/FilterBar';
 import { GroundedAnswerCard } from './components/GroundedAnswerCard';
 import { SearchResultCard } from './components/SearchResultCard';
 import { ContextModal } from './components/ContextModal';
+import { SummaryModal } from './components/SummaryModal';
 import type { HealthStatus, SearchResponse, AnswerResponse } from './types';
 
 export default function App() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [healthLoading, setHealthLoading] = useState<boolean>(true);
+  const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
 
   // Search & Filter State
   const [query, setQuery] = useState<string>('');
@@ -149,6 +152,15 @@ export default function App() {
           </div>
 
           <div className="flex items-center space-x-3 text-xs">
+            <button
+              type="button"
+              onClick={() => setSummaryModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 hover:from-indigo-600/30 hover:to-purple-600/30 border border-indigo-500/40 text-indigo-300 hover:text-white font-medium transition cursor-pointer active:scale-95 shadow-sm"
+            >
+              <FileText className="w-3.5 h-3.5 text-indigo-400" />
+              <span>AI Summarizer</span>
+            </button>
+
             <div className="flex items-center space-x-2 text-slate-400 bg-slate-850 px-3 py-1.5 rounded-xl border border-slate-800">
               <Activity
                 className={`w-3.5 h-3.5 ${
@@ -315,6 +327,16 @@ export default function App() {
       <ContextModal
         messageId={activeContextMessageId}
         onClose={() => setActiveContextMessageId(null)}
+      />
+
+      {/* AI Topic Summary Modal */}
+      <SummaryModal
+        isOpen={summaryModalOpen}
+        onClose={() => setSummaryModalOpen(false)}
+        onOpenContext={(id) => {
+          setSummaryModalOpen(false);
+          setActiveContextMessageId(id);
+        }}
       />
 
       {/* Footer */}
