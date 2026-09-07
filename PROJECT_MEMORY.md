@@ -36,7 +36,7 @@
 | **Phase 0** | Architecture & Environment Check | ✅ Completed | Python 3.13, Node 22, npm 10 verified; folder skeleton, `.gitignore`, `.env.example`, `docs/architecture.md` created. |
 | **Phase 1** | Project Foundation | ✅ Completed | FastAPI backend + health API (`GET /api/health`), React Vite Tailwind frontend with live connectivity, Pytest passing, Commit `fbd24f3`. |
 | **Phase 2** | Data Model & Dataset | ✅ Completed | Domain models, 4,300 messages across 8 participants, 6-month timeline, SQLite repo, 40 benchmark queries, Commit milestone. |
-| **Phase 3** | Embedding & Vector Index | ⏳ Pending | `EmbeddingProvider` (`multilingual-e5-small`), FAISS vector store, indexing script, vector persistence. |
+| **Phase 3** | Embedding & Vector Index | ✅ Completed | `EmbeddingProvider` (`multilingual-e5-small` & mock), FAISS VectorStore (`IndexFlatIP`), 4,300 messages embedded, index persisted. |
 | **Phase 4** | Semantic Search | ⏳ Pending | Query vectorization, FAISS retrieval, Top-K ranking, similarity scoring, search tests. |
 | **Phase 5** | Query Understanding & Filters | ⏳ Pending | Intent extraction, sender detection, temporal constraint extraction, combined filters. |
 | **Phase 6** | Ranking & Context | ⏳ Pending | Transparent hybrid scoring, context window expansion ($\pm 3$ messages), matched message highlighting. |
@@ -82,3 +82,9 @@
   - Included realistic mix of English, Hindi Latin-script, Hinglish code-mixing, typos, and contextual reactions.
   - Authored 40 benchmark evaluation queries (`scripts/evaluation_queries.json`) including 8 semantic gap queries, 8 unanswerable queries, and combined sender/date queries.
   - Verified with automated tests in `backend/tests/test_dataset.py` (5/5 pytest passing).
+- **2026-09-08 — Phase 3 Complete**:
+  - Implemented `BaseEmbeddingProvider` and `HuggingFaceEmbeddingProvider` with `intfloat/multilingual-e5-small` (384-dim, query/passage prefixes, L2 normalization).
+  - Added `MockEmbeddingProvider` for ultra-fast offline unit testing.
+  - Implemented `BaseVectorStore` and `FAISSVectorStore` using `IndexFlatIP` (exact cosine similarity), supporting serialization to `.index` and `metadata.json`.
+  - Built batch indexing pipeline `scripts/build_index.py`, embedding all 4,300 messages and persisting the FAISS vector index (6.30 MB index, 1.19 MB metadata).
+  - Validated with unit tests in `backend/tests/test_vector_store.py` (8/8 pytest passing).

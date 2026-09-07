@@ -193,130 +193,130 @@ GROUND_TRUTH_EVENTS = [
     },
 ]
 
-# Topic dialogue templates for realistic synthetic generation
-CONVERSATION_TOPICS = [
-    {
-        "category": "trip_planning",
-        "threads": [
+# Rich parameterized dynamic dialogue pools to ensure realistic, non-repetitive conversation flow
+PLACES = ["Rishikesh", "Kasol", "Bir Billing", "Shimla", "Jaipur", "Udaipur", "Pondicherry", "Nainital", "Lansdowne", "Dharamshala", "Spiti"]
+FOOD_ITEMS = ["shawarma", "chole bhature", "cold coffee", "masala dosa", "wood-fired pizza", "paneer tikka roll", "belgian waffles", "steamed momos", "pav bhaji", "butter chicken"]
+SUBJECTS = ["Computer Networks", "Machine Learning", "Database Management Systems", "Compiler Design", "Discrete Mathematics", "Cloud Computing", "Computer Vision", "Information Security"]
+COMPANIES = ["Microsoft", "Uber", "Atlassian", "Adobe", "Flipkart", "Swiggy", "Goldman Sachs", "Intuit", "Zomato", "Salesforce"]
+TECH_ITEMS = ["Redis caching", "Docker container", "JWT token expiry", "Tailwind grid layout", "CI workflow on GitHub Actions", "SQLAlchemy connection pool", "Pydantic validator", "WebSocket reconnect logic"]
+
+
+def generate_dynamic_thread(category: str, day_date: datetime) -> List[tuple]:
+    """Generates unique, realistic conversational threads based on date and category."""
+    dt_str = day_date.strftime("%b %d")
+    
+    if category == "trip":
+        place = random.choice(PLACES)
+        food = random.choice(FOOD_ITEMS)
+        threads = [
             [
-                ("Rahul Sharma", "Yaar summer vacation ke liye kahi nikalte hain. Manali ya Goa?", "hi"),
-                ("Sneha Rao", "Goa monsoon me thoda humid hoga. Hills are much better! 🏔️", "en"),
-                ("Vikram Singh", "Manali is awesome, Old Manali side cafes and Solang valley trekking!", "en"),
-                ("Priya Patel", "Pehle budget calculate karo sab log. Flights to Goa are 9k right now.", "hi"),
-                ("Rohan Mehta", "Manali me Maggie aur chai at midnight is unbeatable vibe bhai", "hi"),
-                ("Aman Verma", "Mai laptop leke chalunga if college wifi is not needed haha", "en"),
-                ("Neha Gupta", "Exam khatam hote hi chalenge. Count me in!", "en"),
-                ("Ananya Joshi", "Let's check bus tickets vs train to Chandigarh.", "en"),
+                ("Rahul Sharma", f"Yaar {place} ka weather forecast dekha kya kisi ne?", "hi"),
+                ("Sneha Rao", f"Clear skies and around 18 degrees, perfect for photos! 📸", "en"),
+                ("Vikram Singh", f"Renting bikes or taking local transport there?", "en"),
+                ("Priya Patel", f"Advance booking kar lo sab log, weekend rush me rates badh jate hain.", "hi"),
+                ("Rohan Mehta", f"Aur waha {food} try karna mandatory hai bro!", "hi"),
+                ("Aman Verma", f"Main camera aur powerbank pack kar raha hu.", "en"),
             ],
             [
-                ("Priya Patel", "Hotel options dekhe kisi ne? Homestay ya resort?", "hi"),
-                ("Sneha Rao", "Looking at Old Manali riverside cottages. Peaceful vibe.", "en"),
-                ("Rahul Sharma", "Let me call the Snow Valley manager for group discount.", "en"),
-                ("Vikram Singh", "Make sure there is parking and hot water 24/7.", "en"),
-                ("Rohan Mehta", "Aur bonfire ka scene bhi confirm kar lena bro 🔥", "hi"),
+                ("Vikram Singh", f"Anyone up for an early morning hike if we visit {place}?", "en"),
+                ("Sneha Rao", f"Only if sunrise view is worth waking up at 5 AM haha", "en"),
+                ("Rahul Sharma", f"I checked trails, 4km easy trek to waterfall viewpoint.", "en"),
+                ("Rohan Mehta", f"Mai chai ki tapri pe wait karunga tum sab ka ☕", "hi"),
+                ("Ananya Joshi", f"Make sure everyone wears proper trekking shoes!", "en"),
             ]
         ]
-    },
-    {
-        "category": "capstone_project",
-        "threads": [
+    elif category == "project":
+        tech = random.choice(TECH_ITEMS)
+        subj = random.choice(SUBJECTS)
+        threads = [
             [
-                ("Aman Verma", "Capstone project idea finalize karna hai by Friday. What do you think?", "en"),
-                ("Rahul Sharma", "Semantic conversation search platform. Real-time RAG over chat logs.", "en"),
-                ("Ananya Joshi", "That is super relevant! Most search in WhatsApp is broken regex matching.", "en"),
-                ("Sneha Rao", "I can build the Figma design for the search UI and context threads.", "en"),
-                ("Aman Verma", "FastAPI backend handles async FAISS lookups easily.", "en"),
-                ("Neha Gupta", "Make sure we document API contracts properly for evaluation.", "en"),
-                ("Rohan Mehta", "Aur UI dark mode hona chahiye please, eyes hurt late night 🌙", "hi"),
+                ("Aman Verma", f"Facing a small bug with {tech}. Anyone free to pair debug?", "en"),
+                ("Rahul Sharma", f"Send me the branch name, checking logs now.", "en"),
+                ("Aman Verma", f"Pushed to feature/perf-opt branch, check commit message.", "en"),
+                ("Priya Patel", f"Response time benchmark zaroor note karna after fix.", "hi"),
+                ("Sneha Rao", f"UI animations are looking super smooth on the latest preview!", "en"),
             ],
             [
-                ("Aman Verma", "Guys PR #14 is open. Vector index caching with SQLite metadata.", "en"),
-                ("Rahul Sharma", "Reviewing now. E5 embedding dimensionality 384 hai na?", "hi"),
-                ("Aman Verma", "Yes, 384 dimensions with normalized L2 cosine distance.", "en"),
-                ("Priya Patel", "Latency kitni aa rahi hai per query?", "hi"),
-                ("Aman Verma", "Under 45ms for 5,000 messages on CPU. Super fast.", "en"),
+                ("Ananya Joshi", f"Sprint review update: our {tech} module is 90% completed.", "en"),
+                ("Rahul Sharma", f"Great progress! Let's write integration tests before merge.", "en"),
+                ("Aman Verma", f"Pytest suite passing locally with zero warnings.", "en"),
+                ("Neha Gupta", f"Make sure code comments match the project rubric specifications.", "en"),
+                ("Rohan Mehta", f"Ship it to production on Friday evening? Jk jk 😂", "hi"),
             ]
         ]
-    },
-    {
-        "category": "academics_and_exams",
-        "threads": [
+    elif category == "academics":
+        subj = random.choice(SUBJECTS)
+        assign_no = random.randint(1, 5)
+        threads = [
             [
-                ("Neha Gupta", "Guys Operating Systems assignment 3 submit kiya kya kisi ne?", "hi"),
-                ("Rohan Mehta", "Assignment tha bhi? 😂 Kal deadline hai kya?", "hi"),
-                ("Neha Gupta", "Yes Rohan! Tomorrow 5 PM on Moodle. Page replacement algorithms.", "en"),
-                ("Ananya Joshi", "I have implemented LRU and FIFO in Python, will share gist link.", "en"),
-                ("Vikram Singh", "Thanks Ananya, savior as always! 🙏", "en"),
-                ("Rahul Sharma", "Let's sit together in library after 2 PM to finish reports.", "en"),
+                ("Neha Gupta", f"Guys {subj} assignment {assign_no} is uploaded on portal.", "en"),
+                ("Rohan Mehta", f"Deadline kab hai Neha? Please say next week 😭", "hi"),
+                ("Neha Gupta", f"Due this Thursday 11:59 PM. Start early, 4 questions are long derivation.", "en"),
+                ("Aman Verma", f"I have the reference textbook PDF, sharing in our drive.", "en"),
+                ("Ananya Joshi", f"Let's form a study group in the reading hall tomorrow.", "en"),
+                ("Vikram Singh", f"Will be there post lunch 👍", "en"),
             ],
             [
-                ("Neha Gupta", "Midterm schedule out! Distributed systems is on June 18th.", "en"),
-                ("Priya Patel", "Syllabus is huge. Paxos and Raft consensus are super tricky.", "en"),
-                ("Aman Verma", "I found a great MIT visualizer for Raft, sharing on group.", "en"),
-                ("Rohan Mehta", "Bhai bas passing marks aa jaye, tension mat lo", "hi"),
+                ("Neha Gupta", f"Professor mentioned that {subj} midterms will focus heavily on case studies.", "en"),
+                ("Priya Patel", f"Previous year question papers solve karna padega ache se.", "hi"),
+                ("Rahul Sharma", f"I compiled past 3 years papers into a single PDF.", "en"),
+                ("Sneha Rao", f"Rahul you are a lifesaver, thanks! 🙌", "en"),
             ]
         ]
-    },
-    {
-        "category": "internships_careers",
-        "threads": [
+    elif category == "career":
+        comp = random.choice(COMPANIES)
+        threads = [
             [
-                ("Ananya Joshi", "Google applications are opening next Monday for 2027 grads.", "en"),
-                ("Aman Verma", "Graph algorithms and DP grind shuru kar do sab log.", "hi"),
-                ("Rahul Sharma", "Anyone want to do mock interviews this weekend on Pramp?", "en"),
-                ("Priya Patel", "Yes please! System design basics and object oriented design.", "en"),
-                ("Sneha Rao", "Resume formatting ke liye Jake's resume template is the cleanest.", "en"),
-                ("Rohan Mehta", "Maine resume me 'procrastination specialist' likh diya toh chalega? 😂", "hi"),
-                ("Vikram Singh", "Rohan bhai HR direct reject karegi lol", "hi"),
+                ("Ananya Joshi", f"{comp} just posted open university grad roles on LinkedIn.", "en"),
+                ("Aman Verma", f"Their online assessment usually has 2 hard graph/tree problems.", "en"),
+                ("Rahul Sharma", f"Anyone need a referral? My college senior works at {comp}.", "en"),
+                ("Priya Patel", f"Yes Rahul! Can you forward my resume link?", "en"),
+                ("Sneha Rao", f"Make sure to highlight open source contributions at the top.", "en"),
+                ("Rohan Mehta", f"Main apply kar raha hu with 100% hope and 0% LeetCode practice 😂", "hi"),
             ],
             [
-                ("Aman Verma", "Just finished Google Round 2. Binary tree serialization and topological sort.", "en"),
-                ("Ananya Joshi", "How did it go??", "en"),
-                ("Aman Verma", "Optimal O(V+E) solution likha with clean test cases. Interviewer seemed happy!", "en"),
-                ("Sneha Rao", "Fingers crossed Aman, you got this! 🤞", "en"),
+                ("Aman Verma", f"Solved 5 DP questions today. Interval scheduling and matrix chain multiplication.", "en"),
+                ("Ananya Joshi", f"Consistency is key! Striver's SDE sheet is so well organized.", "en"),
+                ("Vikram Singh", f"Mock interview le lo mera koi weekend pe please.", "hi"),
+                ("Rahul Sharma", f"Saturday 4 PM works for me Vikram, let's do a 45 min round.", "en"),
             ]
         ]
-    },
-    {
-        "category": "food_and_hangouts",
-        "threads": [
+    elif category == "food":
+        food = random.choice(FOOD_ITEMS)
+        place = random.choice(["Bistro Central", "Spicy Wok", "Highway Dhaba", "The Terrace Cafe", "Corner Bakery", "Chai Point"])
+        threads = [
             [
-                ("Rohan Mehta", "Bhai bohot bhookh lagi hai. Shaam ko Paradise Biryani chalein?", "hi"),
-                ("Sneha Rao", "Only if we also get double ka meetha afterwards! 😋", "en"),
-                ("Vikram Singh", "Count me in, post workout meal sorted.", "en"),
-                ("Priya Patel", "Cab pool karte hain from campus gate.", "hi"),
-                ("Rahul Sharma", "I will book Uber XL for 6 of us.", "en"),
-                ("Neha Gupta", "I will join after my lab class at 6:30.", "en"),
+                ("Rohan Mehta", f"Aaj shaam ko {place} pe {food} khane ka plan kiska hai?", "hi"),
+                ("Sneha Rao", f"Count me in! Their iced latte is also really nice.", "en"),
+                ("Vikram Singh", f"Just finished workout, need protein. Coming along.", "en"),
+                ("Priya Patel", f"Splitwise group me settle kar lena previous balance pehle!", "hi"),
+                ("Rahul Sharma", f"Will pick everyone up at 6:45 PM from hostel gate.", "en"),
             ],
             [
-                ("Rohan Mehta", "Biryani was top tier! Total ₹2,400.", "en"),
-                ("Priya Patel", "₹300 each. Sent on GPay Rohan!", "en"),
-                ("Rahul Sharma", "Paid!", "en"),
-                ("Aman Verma", "Sent ₹300 via UPI 👍", "en"),
-                ("Sneha Rao", "GPay done Rohan!", "en"),
-                ("Vikram Singh", "Done bhai", "hi"),
+                ("Sneha Rao", f"Food at {place} was delicious today!", "en"),
+                ("Rohan Mehta", f"Total bill came out to ₹{random.randint(1200, 2600)}.", "en"),
+                ("Priya Patel", f"Sent my share on UPI 👍", "en"),
+                ("Aman Verma", f"Paid via GPay!", "en"),
+                ("Vikram Singh", f"Done from my side too", "en"),
             ]
         ]
-    },
-    {
-        "category": "casual_chitchat",
-        "threads": [
+    else: # casual
+        threads = [
             [
-                ("Rahul Sharma", "Morning guys! Weekend ka kya plan hai?", "hi"),
-                ("Rohan Mehta", "Sleeping 14 hours straight. Exhausted from lab exams.", "en"),
-                ("Vikram Singh", "Morning 6 AM cycle ride to outskirts, anyone interested?", "en"),
-                ("Sneha Rao", "6 AM is too early Vikram haha. I'm going to cafe for sketchbook.", "en"),
-                ("Neha Gupta", "Library for me, gate syllabus pending.", "en"),
+                ("Rahul Sharma", f"Good morning everyone! How is the {dt_str} week going?", "en"),
+                ("Rohan Mehta", f"Surviving on black coffee and hope bhai ☕", "hi"),
+                ("Sneha Rao", f"Working on new UI illustrations, will share sneak peek soon.", "en"),
+                ("Ananya Joshi", f"Weather is surprisingly pleasant today for a change.", "en"),
+                ("Vikram Singh", f"Morning 10k run done, feeling energetic 🏃", "en"),
             ],
             [
-                ("Sneha Rao", "Look at this stray puppy outside the department cafeteria! 🐶", "en"),
-                ("Ananya Joshi", "Sooo cute!! Did you give him some biscuits?", "en"),
-                ("Sneha Rao", "Yess, bought Parle-G from canteen. He's sleeping peacefully now.", "en"),
-                ("Rahul Sharma", "Aww wholesale campus mascot ❤️", "en"),
+                ("Rohan Mehta", f"Saw this hilarious coding meme on Reddit, relates so hard 😂", "en"),
+                ("Aman Verma", f"Haha 100% accurate, happens every time during prod release", "en"),
+                ("Sneha Rao", f"Omg send in group chat!", "en"),
+                ("Neha Gupta", f"Lmao that is too real 😭", "en"),
             ]
         ]
-    }
-]
+    return random.choice(threads)
 
 # Conversational fillers and follow-up templates
 SHORT_CONFIRMATIONS = [
@@ -389,9 +389,9 @@ def generate_chat_dataset(
         for b_hour in burst_hours:
             burst_time = day_date.replace(hour=b_hour, minute=random.randint(0, 45), second=random.randint(0, 59))
             
-            # Pick a topic
-            topic = random.choice(CONVERSATION_TOPICS)
-            thread = random.choice(topic["threads"])
+            # Pick a category and generate dynamic thread
+            cat = random.choice(["trip", "project", "academics", "career", "food", "casual"])
+            thread = generate_dynamic_thread(cat, day_date)
 
             # Post thread messages with 30s - 3min intervals
             t_offset = 0

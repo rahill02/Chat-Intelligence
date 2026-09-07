@@ -5,7 +5,7 @@
     "query_type": "semantic",
     "expected_answer": "Manali was confirmed on March 14, with Rahul handling hotel booking.",
     "expected_message_ids": [
-      "msg_00285"
+      "msg_00275"
     ],
     "semantic_gap": true,
     "target_sender": "Rahul Sharma",
@@ -22,7 +22,7 @@
     "query_type": "semantic",
     "expected_answer": "Sneha recommended Snow Valley Resorts as it fits the budget.",
     "expected_message_ids": [
-      "msg_00387"
+      "msg_00390"
     ],
     "semantic_gap": true,
     "target_sender": "Sneha Rao",
@@ -39,7 +39,7 @@
     "query_type": "semantic",
     "expected_answer": "Vikram suggested traveling by Volvo semi-sleeper bus from Majnu Ka Tila.",
     "expected_message_ids": [
-      "msg_00436"
+      "msg_00449"
     ],
     "semantic_gap": true,
     "target_sender": "Vikram Singh",
@@ -56,7 +56,7 @@
     "query_type": "semantic",
     "expected_answer": "FastAPI for the backend and React with Vite for the frontend.",
     "expected_message_ids": [
-      "msg_00709"
+      "msg_00792"
     ],
     "semantic_gap": true,
     "target_sender": "Aman Verma",
@@ -73,7 +73,7 @@
     "query_type": "semantic",
     "expected_answer": "SQLite for local development with repository abstractions for PostgreSQL.",
     "expected_message_ids": [
-      "msg_00980"
+      "msg_00996"
     ],
     "semantic_gap": true,
     "target_sender": "Rahul Sharma",
@@ -90,7 +90,7 @@
     "query_type": "semantic",
     "expected_answer": "The multilingual E5 small embedding model.",
     "expected_message_ids": [
-      "msg_01602"
+      "msg_01525"
     ],
     "semantic_gap": true,
     "target_sender": "Rahul Sharma",
@@ -107,7 +107,7 @@
     "query_type": "semantic",
     "expected_answer": "NeuralByte.",
     "expected_message_ids": [
-      "msg_01910"
+      "msg_01861"
     ],
     "semantic_gap": true,
     "target_sender": "Ananya Joshi",
@@ -124,7 +124,7 @@
     "query_type": "semantic",
     "expected_answer": "Olive Bistro at 8 PM on August 10.",
     "expected_message_ids": [
-      "msg_03889"
+      "msg_03822"
     ],
     "semantic_gap": true,
     "target_sender": "Sneha Rao",
@@ -141,7 +141,7 @@
     "query_type": "attributed",
     "expected_answer": "Priya stated that total expenditure should be capped at ₹5,000 per person max, strictly.",
     "expected_message_ids": [
-      "msg_00296"
+      "msg_00290"
     ],
     "semantic_gap": false,
     "target_sender": "Priya Patel",
@@ -155,7 +155,7 @@
     "query_type": "attributed",
     "expected_answer": "Aman deployed the staging continuous deployment pipeline on Render.",
     "expected_message_ids": [
-      "msg_01430"
+      "msg_01388"
     ],
     "semantic_gap": false,
     "target_sender": "Aman Verma",
@@ -169,7 +169,7 @@
     "query_type": "attributed",
     "expected_answer": "Aman Verma signed the offer letter for Google summer SWE internship.",
     "expected_message_ids": [
-      "msg_03129"
+      "msg_03046"
     ],
     "semantic_gap": false,
     "target_sender": "Aman Verma",
@@ -183,7 +183,7 @@
     "query_type": "attributed",
     "expected_answer": "Everyone owes Rohan ₹300 via GPay or PhonePe for the Paradise Biryani bill.",
     "expected_message_ids": [
-      "msg_02319"
+      "msg_02218"
     ],
     "semantic_gap": false,
     "target_sender": "Rohan Mehta",
@@ -197,7 +197,7 @@
     "query_type": "attributed",
     "expected_answer": "In the 3rd floor reading room by 11 AM with OS notes.",
     "expected_message_ids": [
-      "msg_02599"
+      "msg_02492"
     ],
     "semantic_gap": false,
     "target_sender": "Neha Gupta",
@@ -211,7 +211,7 @@
     "query_type": "attributed",
     "expected_answer": "Sneha mentioned that Snow Valley Resorts looks neat and falls within budget.",
     "expected_message_ids": [
-      "msg_00387"
+      "msg_00390"
     ],
     "semantic_gap": false,
     "target_sender": "Sneha Rao",
@@ -225,7 +225,7 @@
     "query_type": "attributed",
     "expected_answer": "Vikram recommended taking the Volvo semi-sleeper bus from Majnu Ka Tila as it is safer and cheaper.",
     "expected_message_ids": [
-      "msg_00436"
+      "msg_00449"
     ],
     "semantic_gap": false,
     "target_sender": "Vikram Singh",
@@ -239,7 +239,7 @@
     "query_type": "attributed",
     "expected_answer": "NeuralByte.",
     "expected_message_ids": [
-      "msg_01910"
+      "msg_01861"
     ],
     "semantic_gap": false,
     "target_sender": "Ananya Joshi",
@@ -253,7 +253,7 @@
     "query_type": "temporal",
     "expected_answer": "Manali was confirmed as the trip destination on March 14.",
     "expected_message_ids": [
-      "msg_00285"
+      "msg_00275"
     ],
     "semantic_gap": false,
     "target_sender": null,
@@ -270,7 +270,7 @@
     "query_type": "temporal",
     "expected_answer": "The Distributed Systems exam was postponed to June 22.",
     "expected_message_ids": [
-      "msg_02677"
+      "msg_02565"
     ],
     "semantic_gap": false,
     "target_sender": "Neha Gupta",
@@ -287,7 +287,7 @@
     "query_type": "temporal",
     "expected_answer": "Aman signed the offer letter for the Google summer SWE internship.",
     "expected_message_ids": [
-      "msg_03129"
+      "msg_03046"
     ],
     "semantic_gap": false,
     "target_sender": null,
@@ -304,7 +304,7 @@
     "query_type": "temporal",
     "expected_answer": "Priya's surprise birthday party at Olive Bistro at 8 PM.",
     "expected_message_ids": [
-      "msg_03889"
+      "msg_03822"
     ],
     "semantic_gap": false,
     "target_sender": null,
@@ -321,7 +321,7 @@
     "query_type": "temporal",
     "expected_answer": "FastAPI and React on Vite were finalized on April 3.",
     "expected_message_ids": [
-      "msg_00709"
+      "msg_00792"
     ],
     "semantic_gap": false,
     "target_sender": null,
@@ -338,7 +338,7 @@
     "query_type": "temporal",
     "expected_answer": "The GitHub repo submission deadline of 11:59 PM for CodeHack hackathon.",
     "expected_message_ids": [
-      "msg_01988"
+      "msg_01906"
     ],
     "semantic_gap": false,
     "target_sender": null,
@@ -355,7 +355,7 @@
     "query_type": "combined",
     "expected_answer": "Priya stated to cap total expenditure at ₹5,000 per person max.",
     "expected_message_ids": [
-      "msg_00296"
+      "msg_00290"
     ],
     "semantic_gap": false,
     "target_sender": "Priya Patel",
@@ -372,7 +372,7 @@
     "query_type": "combined",
     "expected_answer": "Priya shared the Amazon prep sheet with 75 LeetCode medium questions in the Google drive.",
     "expected_message_ids": [
-      "msg_03466"
+      "msg_03442"
     ],
     "semantic_gap": false,
     "target_sender": "Priya Patel",
@@ -389,7 +389,7 @@
     "query_type": "combined",
     "expected_answer": "Ananya announced the 11:59 PM GitHub submission deadline for CodeHack.",
     "expected_message_ids": [
-      "msg_01988"
+      "msg_01906"
     ],
     "semantic_gap": false,
     "target_sender": "Ananya Joshi",
@@ -406,7 +406,7 @@
     "query_type": "combined",
     "expected_answer": "Sneha reserved a table at Olive Bistro for Priya's surprise birthday party.",
     "expected_message_ids": [
-      "msg_03889"
+      "msg_03822"
     ],
     "semantic_gap": true,
     "target_sender": "Sneha Rao",
@@ -423,7 +423,7 @@
     "query_type": "combined",
     "expected_answer": "Neha announced that the Distributed Systems exam was postponed to June 22.",
     "expected_message_ids": [
-      "msg_02677"
+      "msg_02565"
     ],
     "semantic_gap": false,
     "target_sender": "Neha Gupta",
@@ -440,7 +440,7 @@
     "query_type": "semantic",
     "expected_answer": "Manali 14 March ko confirm hua tha.",
     "expected_message_ids": [
-      "msg_00285"
+      "msg_00275"
     ],
     "semantic_gap": false,
     "target_sender": null,
@@ -454,7 +454,7 @@
     "query_type": "attributed",
     "expected_answer": "Priya ne ₹5,000 per person max budget fix kiya tha.",
     "expected_message_ids": [
-      "msg_00296"
+      "msg_00290"
     ],
     "semantic_gap": false,
     "target_sender": "Priya Patel",
@@ -468,7 +468,7 @@
     "query_type": "attributed",
     "expected_answer": "Total bill ₹2,400 tha aur Rohan ko ₹300 per person GPay/PhonePe karna tha.",
     "expected_message_ids": [
-      "msg_02319"
+      "msg_02218"
     ],
     "semantic_gap": false,
     "target_sender": "Rohan Mehta",
@@ -482,7 +482,7 @@
     "query_type": "semantic",
     "expected_answer": "Distributed Systems ka exam June 22 ko postpone hua tha.",
     "expected_message_ids": [
-      "msg_02677"
+      "msg_02565"
     ],
     "semantic_gap": false,
     "target_sender": "Neha Gupta",
@@ -496,7 +496,7 @@
     "query_type": "semantic",
     "expected_answer": "Aman signed the Google internship offer letter on July 8.",
     "expected_message_ids": [
-      "msg_03129"
+      "msg_03046"
     ],
     "semantic_gap": false,
     "target_sender": "Aman Verma",
