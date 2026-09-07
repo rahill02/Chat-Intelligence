@@ -4,8 +4,9 @@ from typing import Optional, List
 import numpy as np
 from backend.app.core.config import settings
 from backend.app.models.search import SearchRequest, SearchResponse, SearchResultItem
-from backend.app.models.message import Message
+from backend.app.models.message import Message, MessageWithContext
 from backend.app.services.query_analyzer import QueryAnalyzer, QueryAnalysis
+from backend.app.services.ranking_service import RankingService
 from backend.app.providers.base import BaseEmbeddingProvider
 from backend.app.repositories.vector_store import BaseVectorStore, FAISSVectorStore
 from backend.app.repositories.base import BaseMessageRepository
@@ -18,6 +19,9 @@ class SearchService:
     - Query understanding (sender attribution, temporal bounds, intent classification)
     - Multilingual vector retrieval via FAISS
     - Metadata filtering (speaker, date range, conversation)
+    - Explainable hybrid ranking (semantic + sender + temporal + keyword boosts)
+    - Conversational thread context retrieval (±3 surrounding messages)
+    - Keyword highlighting
     - Full entity hydration from SQLite
     """
 
@@ -39,7 +43,9 @@ class SearchService:
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
         top_k: int = 10,
-        min_score: float = 0.0
+        min_score: float = 0.0,
+        include_context: bool = True,
+        context_window: int = 3,
     ) -> SearchResponse:
         start_time = time.perf_counter()
 
@@ -87,13 +93,13 @@ class SearchService:
                     else:
                         candidate_scores[m.id] = 0.5  # Neutral default if not indexed
 
-        # 4. Filter and rank candidates
+        # 4. Filter, rank, and score candidates
         all_candidate_ids = list(candidate_scores.keys())
         messages = self.message_repo.get_messages_by_ids(all_candidate_ids)
         msg_dict = {m.id: m for m in messages}
 
-        matching_candidates: List[tuple[str, float]] = []
-        fallback_candidates: List[tuple[str, float]] = []
+        matching_candidates: List[tuple[str, float, float, dict[str, float], list[str]]] = []
+        fallback_candidates: List[tuple[str, float, float, dict[str, float], list[str]]] = []
 
         for m_id, score in candidate_scores.items():
             if score < min_score:
@@ -118,14 +124,24 @@ class SearchService:
             if effective_end and m.timestamp > effective_end:
                 temporal_match = False
 
-            if sender_match and temporal_match:
-                matching_candidates.append((m_id, score))
-            else:
-                fallback_candidates.append((m_id, score))
+            # Compute hybrid score & keywords
+            final_score, breakdown = RankingService.compute_score(
+                similarity_score=score,
+                message=m,
+                query_analysis=analysis,
+                query_text=query
+            )
+            highlights = RankingService.extract_highlights(query=query, content=m.content)
+            candidate_item = (m_id, score, final_score, breakdown, highlights)
 
-        # Sort matching candidates by similarity score descending
-        matching_candidates.sort(key=lambda x: -x[1])
-        fallback_candidates.sort(key=lambda x: -x[1])
+            if sender_match and temporal_match:
+                matching_candidates.append(candidate_item)
+            else:
+                fallback_candidates.append(candidate_item)
+
+        # Sort matching candidates by final_score descending, with similarity as tiebreaker
+        matching_candidates.sort(key=lambda x: (-x[2], -x[1]))
+        fallback_candidates.sort(key=lambda x: (-x[2], -x[1]))
 
         # Select top candidates (preferring filtered matches)
         selected_candidates = matching_candidates[:top_k]
@@ -133,15 +149,33 @@ class SearchService:
             remaining = top_k - len(selected_candidates)
             selected_candidates.extend(fallback_candidates[:remaining])
 
-        # 5. Assemble ranked search results
+        # 5. Assemble ranked search results with surrounding conversational context
         results: List[SearchResultItem] = []
-        for rank_idx, (m_id, score) in enumerate(selected_candidates, start=1):
+        for rank_idx, (m_id, sim_score, fin_score, breakdown, highlights) in enumerate(selected_candidates, start=1):
             if m_id in msg_dict:
+                m = msg_dict[m_id]
+                context_obj: Optional[MessageWithContext] = None
+                if include_context and context_window > 0:
+                    before, after = self.message_repo.get_surrounding_messages(
+                        conversation_id=m.conversation_id,
+                        sequence_num=m.sequence_num,
+                        window=context_window
+                    )
+                    context_obj = MessageWithContext(
+                        target_message=m,
+                        before=before,
+                        after=after
+                    )
+
                 results.append(
                     SearchResultItem(
-                        message=msg_dict[m_id],
-                        similarity_score=round(score, 4),
-                        rank=rank_idx
+                        message=m,
+                        similarity_score=round(sim_score, 4),
+                        final_score=round(fin_score, 4),
+                        rank=rank_idx,
+                        score_breakdown=breakdown,
+                        context=context_obj,
+                        highlights=highlights
                     )
                 )
 
@@ -155,6 +189,19 @@ class SearchService:
             search_type=analysis.intent,
             query_analysis=analysis
         )
+
+    def get_message_context(self, message_id: str, window: int = 3) -> Optional[MessageWithContext]:
+        """Fetches a message and its surrounding context by message ID."""
+        msg = self.message_repo.get_message(message_id)
+        if not msg:
+            return None
+        before, after = self.message_repo.get_surrounding_messages(
+            conversation_id=msg.conversation_id,
+            sequence_num=msg.sequence_num,
+            window=window
+        )
+        return MessageWithContext(target_message=msg, before=before, after=after)
+
 
 
 # Global singleton cache for FastAPI dependency injection

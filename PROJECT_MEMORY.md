@@ -1,6 +1,6 @@
 # Chat Intelligence — Project Memory & Tracking Document
 
-_Last Updated: 2026-09-08 (Phase 5 Complete)_
+_Last Updated: 2026-09-08 (Phase 6 Complete)_
 
 ---
 
@@ -39,7 +39,7 @@ _Last Updated: 2026-09-08 (Phase 5 Complete)_
 | **Phase 3**  | Embedding & Vector Index         | ✅ Completed | `EmbeddingProvider` (`multilingual-e5-small` & mock), FAISS VectorStore (`IndexFlatIP`), 4,300 messages embedded, index persisted.       |
 | **Phase 4**  | Semantic Search                  | ✅ Completed | `SearchService`, query vectorization, candidate hydration from SQLite, `POST /api/search` endpoint, tests passing.                       |
 | **Phase 5**  | Query Understanding & Filters    | ✅ Completed | `QueryAnalyzer` (sender attribution, temporal bounds, intent classification), hybrid retrieval, 17/17 tests passing.                     |
-| **Phase 6**  | Ranking & Context                | ⏳ Pending   | Transparent hybrid scoring, context window expansion ($\pm 3$ messages), matched message highlighting.                                   |
+| **Phase 6**  | Ranking & Context                | ✅ Completed | Explainable hybrid scoring, context window expansion ($\pm 3$ messages), keyword highlighting, context endpoint, 21/21 tests passing.    |
 | **Phase 7**  | Grounded AI Answers              | ⏳ Pending   | `LLMProvider` abstraction, citation-based grounded synthesis, refusal on unanswerable queries.                                           |
 | **Phase 8**  | React UI                         | ⏳ Pending   | Production search interface, filter chips, AI answer card, result list, interactive context viewer.                                      |
 | **Phase 9**  | AI Summaries                     | ⏳ Pending   | Topic-based summaries and decision extraction bonus feature.                                                                             |
@@ -101,4 +101,11 @@ _Last Updated: 2026-09-08 (Phase 5 Complete)_
   - Built hybrid candidate retrieval in `SearchService` marrying FAISS top-k vector candidates with SQLite filtered messages.
   - Automated test suite `backend/tests/test_query_analyzer.py` validating sender detection, temporal parsing, intent classification, and end-to-end filtered search.
   - All 17/17 tests passing across the backend test suite.
+- **2026-09-08 — Phase 6 Complete**:
+  - Implemented `RankingService` (`backend/app/services/ranking_service.py`) combining dense semantic vector similarity, sender match boost (+0.10), temporal range boost (+0.08), and keyword overlap ratio (+0.06), with transparent score breakdown.
+  - Implemented bilingual (English & Hinglish) stopword filtering and matched keyword / token highlighter (`extract_highlights`).
+  - Integrated surrounding conversational context thread expansion ($\pm 3$ messages before & after via `MessageWithContext`) on search hits so contextual replies ("done", "yes", "let's do it") have immediate thread grounding.
+  - Added dedicated context endpoint `GET /api/messages/{message_id}/context?window=3` for on-demand conversational thread expansion.
+  - Automated test suite in `backend/tests/test_ranking_and_context.py` (21/21 backend pytest passing).
+
 

@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field
 
 
 class QueryAnalysis(BaseModel):
-    original_query: str
-    cleaned_query: str
+    original_query: str = ""
+    cleaned_query: str = ""
     detected_sender: Optional[str] = None
     detected_date_range: Optional[Dict[str, str]] = None
     intent: str = Field(default="semantic", description="semantic | attributed | temporal | combined")
