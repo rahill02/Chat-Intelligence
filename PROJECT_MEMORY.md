@@ -134,13 +134,12 @@ _Last Updated: 2026-09-08 (Phase 11 Complete — Frontend UI Redesign)_
   - Authored comprehensive evaluation report (`docs/evaluation_report.md`) with performance matrix, category breakdowns, and refusal audit.
   - Added unit test suite (`backend/tests/test_evaluation.py`) asserting benchmark execution, anti-hallucination guarantees, and latency standards (all 32/32 backend pytest passing).
   - Verified clean frontend production compilation (`npm run build` passing in 554ms).
-- **2026-09-08 — Phase 11 Complete (Frontend UI Redesign)**:
-  - Redesigned frontend to visually match the provided v0 reference screenshot.
-  - Implemented 3-column desktop layout (Sidebar, Center Search Area, Right Search Insights Panel) in a clean, modern light SaaS theme.
-  - Built reusable components: `Sidebar`, `TopBar`, `SearchHeader`, `SearchFilters`, `AIAnswerCard`, `ConversationThread`, and `SearchInsightsPanel`.
-  - Preserved 100% of existing backend APIs, retrieval logic, context expansion ($\pm 3$ to $\pm 8$), and AI summarization.
-  - Adapted `ContextModal` and `SummaryModal` to light SaaS theme.
-  - Verified clean frontend production build (`npm run build` passing in 721ms) and 100% backend test pass (32/32 pytest passing).
+- **2026-09-08 — Phase 11 Polish (Custom Popover Dropdowns & Direct Topic Summarization)**:
+  - Replaced native HTML select menus with custom Linear/Notion/Raycast floating popover dropdowns in `SearchFilters.tsx`.
+  - Implemented direct topic summarization: clicking "Summarize this topic" at the bottom right of `SearchInsightsPanel` directly summarizes the topic from the active screen (e.g. "Budget", "Trip to Manali") without presenting an input prompt or asking the user what to summarize.
+  - Added direct-mode banner with topic pill, instant summary generation, and subtle topic switcher in `SummaryModal.tsx`.
+  - All 32/32 backend tests passing, frontend builds cleanly in <600ms.
+
 
 
 
