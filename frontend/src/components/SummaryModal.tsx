@@ -17,18 +17,23 @@ interface SummaryModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenContext: (messageId: string) => void;
+  initialTopic?: string;
+  directMode?: boolean;
 }
 
 export const SummaryModal: React.FC<SummaryModalProps> = ({
   isOpen,
   onClose,
   onOpenContext,
+  initialTopic,
+  directMode = false,
 }) => {
-  const [topic, setTopic] = useState<string>('Trip to Manali');
+  const [topic, setTopic] = useState<string>(initialTopic || 'Trip to Manali');
   const [suggestedTopics, setSuggestedTopics] = useState<string[]>([]);
   const [summaryData, setSummaryData] = useState<SummaryResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [showTopicSwitcher, setShowTopicSwitcher] = useState<boolean>(!directMode);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -46,9 +51,10 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
   }, [isOpen]);
 
   const handleGenerateSummary = async (targetTopic?: string) => {
-    const activeTopic = targetTopic ?? topic;
-    if (!activeTopic.trim()) return;
+    const activeTopic = (targetTopic ?? topic).trim();
+    if (!activeTopic) return;
 
+    setSummaryData(null);
     setLoading(true);
     setError(null);
 
@@ -69,12 +75,18 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
     }
   };
 
-  // Trigger initial summary on first open if empty
+  // When modal opens or initialTopic/directMode changes, automatically summarize directly
   useEffect(() => {
-    if (isOpen && !summaryData && !loading) {
-      handleGenerateSummary('Trip to Manali');
+    if (!isOpen) return;
+
+    const targetTopic = (initialTopic && initialTopic.trim()) ? initialTopic.trim() : (topic.trim() || 'Trip to Manali');
+    setTopic(targetTopic);
+    setShowTopicSwitcher(!directMode);
+
+    if (directMode || !summaryData || summaryData.topic !== targetTopic) {
+      handleGenerateSummary(targetTopic);
     }
-  }, [isOpen]);
+  }, [isOpen, initialTopic, directMode]);
 
   // Handle ESC dismissal
   useEffect(() => {
@@ -123,56 +135,101 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
           </button>
         </div>
 
-        {/* Topic Input & Suggested Chips */}
-        <div className="px-6 py-3 bg-gray-50/30 border-b border-gray-100 space-y-2.5">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder="Enter topic to summarize (e.g. 'Trip to Manali', 'DSA exam', 'Hackathon')..."
-              className="flex-1 px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 shadow-2xs"
-            />
+        {/* Active Topic Banner vs Custom Input */}
+        {!showTopicSwitcher ? (
+          <div className="px-6 py-3 bg-indigo-50/40 border-b border-indigo-100/70 flex items-center justify-between">
+            <div className="flex items-center gap-2.5 text-xs">
+              <span className="text-gray-500 font-medium">Topic:</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-indigo-200 text-indigo-700 font-semibold shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                <span>{topic}</span>
+              </div>
+              <span className="text-[11px] text-gray-400 hidden sm:inline">
+                Directly summarizing topic from main screen
+              </span>
+            </div>
+
             <button
               type="button"
-              onClick={() => handleGenerateSummary()}
-              disabled={loading || !topic.trim()}
-              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
+              onClick={() => setShowTopicSwitcher(true)}
+              className="text-[11px] font-medium text-gray-500 hover:text-indigo-600 transition cursor-pointer underline underline-offset-2"
             >
-              {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-              <span>Summarize</span>
+              Change topic
             </button>
           </div>
-
-          {/* Quick Topic Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] pb-1 no-scrollbar">
-            <span className="text-gray-400 font-medium shrink-0">Suggested Topics:</span>
-            {suggestedTopics.map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => {
-                  setTopic(t);
-                  handleGenerateSummary(t);
+        ) : (
+          <div className="px-6 py-3 bg-gray-50/40 border-b border-gray-100 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-gray-500">Choose or enter topic:</span>
+              {directMode && (
+                <button
+                  type="button"
+                  onClick={() => setShowTopicSwitcher(false)}
+                  className="text-[11px] text-gray-400 hover:text-gray-600 cursor-pointer"
+                >
+                  Hide
+                </button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder="Enter topic to summarize (e.g. 'Trip to Manali', 'DSA exam', 'Hackathon')..."
+                className="flex-1 px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 shadow-2xs"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && topic.trim()) {
+                    handleGenerateSummary(topic);
+                  }
                 }}
-                className={`shrink-0 px-2.5 py-1 rounded-lg border transition cursor-pointer active:scale-95 ${
-                  topic === t
-                    ? 'bg-blue-50 border-blue-200 text-blue-700 font-semibold'
-                    : 'bg-white border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                }`}
+              />
+              <button
+                type="button"
+                onClick={() => handleGenerateSummary(topic)}
+                disabled={loading || !topic.trim()}
+                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs transition disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
               >
-                {t}
+                {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                <span>Summarize</span>
               </button>
-            ))}
+            </div>
+
+            {/* Quick Topic Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] pb-1 no-scrollbar">
+              <span className="text-gray-400 font-medium shrink-0">Suggested:</span>
+              {suggestedTopics.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => {
+                    setTopic(t);
+                    handleGenerateSummary(t);
+                  }}
+                  className={`shrink-0 px-2.5 py-1 rounded-lg border transition cursor-pointer active:scale-95 ${
+                    topic === t
+                      ? 'bg-indigo-50 border-indigo-200 text-indigo-700 font-semibold'
+                      : 'bg-white border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {loading ? (
             <div className="py-24 flex flex-col items-center justify-center text-gray-400 text-xs">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600 mb-3" />
-              <span>Analyzing chat dialogue and extracting key decisions...</span>
+              <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mb-3" />
+              <span className="text-gray-700 font-medium text-sm">
+                Generating grounded summary for <span className="text-indigo-600 font-bold">"{topic}"</span>...
+              </span>
+              <span className="text-[11px] text-gray-400 mt-1">
+                Analyzing dialogue, extracting decisions, action items, and timelines
+              </span>
             </div>
           ) : error ? (
             <div className="py-12 text-center text-rose-600 text-xs bg-rose-50 p-4 rounded-xl border border-rose-200">

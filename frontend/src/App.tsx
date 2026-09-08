@@ -37,6 +37,8 @@ export default function App() {
   // Modals
   const [activeContextMessageId, setActiveContextMessageId] = useState<string | null>(null);
   const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
+  const [summaryTopic, setSummaryTopic] = useState<string>('Budget');
+  const [directSummaryMode, setDirectSummaryMode] = useState<boolean>(false);
 
   // Core Search Execution (Preserving all API logic and query flows)
   const handleSearch = useCallback(
@@ -146,9 +148,15 @@ export default function App() {
         activeNav={activeNav}
         onSelectNav={(nav) => {
           setActiveNav(nav);
-          if (nav === 'Summaries') setSummaryModalOpen(true);
+          if (nav === 'Summaries') {
+            setDirectSummaryMode(false);
+            setSummaryModalOpen(true);
+          }
         }}
-        onOpenSummaries={() => setSummaryModalOpen(true)}
+        onOpenSummaries={() => {
+          setDirectSummaryMode(false);
+          setSummaryModalOpen(true);
+        }}
         activeConversation={activeConversation}
         onSelectConversation={(conv) => setActiveConversation(conv)}
       />
@@ -223,7 +231,11 @@ export default function App() {
         <SearchInsightsPanel
           searchResults={searchResults}
           onClose={() => setInsightsPanelOpen(false)}
-          onSummarizeTopic={() => setSummaryModalOpen(true)}
+          onSummarizeTopic={(topic) => {
+            setSummaryTopic(topic);
+            setDirectSummaryMode(true);
+            setSummaryModalOpen(true);
+          }}
         />
       )}
 
@@ -236,6 +248,8 @@ export default function App() {
       {/* Reusable AI Summary Modal */}
       <SummaryModal
         isOpen={summaryModalOpen}
+        initialTopic={summaryTopic}
+        directMode={directSummaryMode}
         onClose={() => setSummaryModalOpen(false)}
         onOpenContext={(id) => {
           setSummaryModalOpen(false);

@@ -5,25 +5,30 @@ import type { SearchResponse } from '../types';
 interface SearchInsightsPanelProps {
   searchResults: SearchResponse | null;
   onClose?: () => void;
-  onSummarizeTopic: () => void;
+  onSummarizeTopic: (topic: string) => void;
 }
 
 function extractTopicName(cleanedQuery?: string, originalQuery?: string): string {
   const text = (cleanedQuery || originalQuery || '').toLowerCase();
   if (text.includes('budget')) return 'Budget';
-  if (text.includes('trip') || text.includes('manali') || text.includes('destination')) return 'Manali Vacation';
-  if (text.includes('google') || text.includes('offr') || text.includes('internship')) return 'Google Offer';
-  if (text.includes('exam') || text.includes('postpone')) return 'Exam Schedule';
+  if (text.includes('trip') || text.includes('manali') || text.includes('destination') || text.includes('hotel') || text.includes('resort')) return 'Trip to Manali';
+  if (text.includes('google') || text.includes('offr') || text.includes('internship')) return 'Google Summer Internship';
+  if (text.includes('exam') || text.includes('postpone') || text.includes('dsa') || text.includes('study')) return 'Data Structures & Algorithms Exam';
+  if (text.includes('hackathon') || text.includes('neuralbyte')) return 'NeuralByte Hackathon';
+  if (text.includes('dinner') || text.includes('birthday') || text.includes('party') || text.includes('celebrat')) return "Priya's Birthday Celebration";
   if (text.includes('fastapi') || text.includes('react') || text.includes('tech') || text.includes('stack')) return 'Project Architecture';
-  if (text.includes('dinner') || text.includes('birthday') || text.includes('party')) return 'Birthday Celebration';
-  if (text.includes('bus') || text.includes('volvo') || text.includes('majnu')) return 'Travel Logistics';
+  if (text.includes('bus') || text.includes('volvo') || text.includes('majnu') || text.includes('transport')) return 'Travel Logistics';
   if (text.includes('render') || text.includes('deploy') || text.includes('staging')) return 'Deployment Pipeline';
   
-  if (cleanedQuery && cleanedQuery.length > 2) {
-    const words = cleanedQuery.split(' ').slice(0, 3);
+  if (cleanedQuery && cleanedQuery.trim().length > 2) {
+    const words = cleanedQuery.trim().split(/\s+/).slice(0, 4);
     return words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   }
-  return 'General';
+  if (originalQuery && originalQuery.trim().length > 2) {
+    const words = originalQuery.trim().split(/\s+/).slice(0, 4);
+    return words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+  return 'Trip to Manali';
 }
 
 function formatQueryType(intent?: string, searchType?: string): string {
@@ -188,14 +193,14 @@ export const SearchInsightsPanel: React.FC<SearchInsightsPanelProps> = ({
       <div className="pt-6 border-t border-gray-100 mt-6">
         <button
           type="button"
-          onClick={onSummarizeTopic}
+          onClick={() => onSummarizeTopic(detectedTopic)}
           className="w-full py-2.5 px-3 rounded-xl border border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100/70 text-indigo-700 font-medium text-xs flex items-center justify-center gap-1.5 shadow-2xs transition cursor-pointer active:scale-98"
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
           <span>Summarize this topic</span>
         </button>
         <p className="text-[11px] text-gray-400 text-center mt-2 leading-tight">
-          Create a grounded summary from the messages above.
+          Directly summarizes <span className="font-semibold text-gray-600">"{detectedTopic}"</span> without prompting.
         </p>
       </div>
     </aside>
