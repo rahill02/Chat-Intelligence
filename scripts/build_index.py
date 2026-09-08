@@ -35,7 +35,7 @@ def build_index(
     total_messages = repo.count_messages()
     print(f"Loading {total_messages} messages from SQLite database...")
 
-    messages = repo.filter_messages(conversation_id="conv_main_group", limit=10000)
+    messages = repo.filter_messages(limit=20000)
     print(f"Loaded {len(messages)} messages for indexing.")
 
     if not messages:

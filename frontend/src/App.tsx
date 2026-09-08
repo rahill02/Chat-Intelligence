@@ -12,6 +12,13 @@ import { ContextModal } from './components/ContextModal';
 import { SummaryModal } from './components/SummaryModal';
 import type { SearchResponse, AnswerResponse, SearchResultItem } from './types';
 
+const CONVERSATION_ID_MAP: Record<string, string> = {
+  'College Friends': 'conv_main_group',
+  'Project Team': 'conv_project_team',
+  'Rahul & Priya': 'conv_rahul_priya',
+  'Family Chat': 'conv_family_chat',
+};
+
 export default function App() {
   // Navigation & Conversation State
   const [activeNav, setActiveNav] = useState<string>('Search');
@@ -50,10 +57,13 @@ export default function App() {
       setError(null);
       setActiveSearchQuery(targetQuery);
 
+      const conversationId = CONVERSATION_ID_MAP[activeConversation] || null;
+
       try {
         // 1. Vector & Hybrid Candidate Search
         const searchPromise = searchMessages({
           query: targetQuery,
+          conversation_id: conversationId,
           sender: sender || null,
           start_date: startDate ? `${startDate}T00:00:00Z` : null,
           end_date: endDate ? `${endDate}T23:59:59Z` : null,
@@ -66,6 +76,7 @@ export default function App() {
         setAnswerLoading(true);
         const answerPromise = getAnswer({
           query: targetQuery,
+          conversation_id: conversationId,
           sender: sender || null,
           start_date: startDate ? `${startDate}T00:00:00Z` : null,
           end_date: endDate ? `${endDate}T23:59:59Z` : null,
@@ -93,7 +104,7 @@ export default function App() {
         setSearchLoading(false);
       }
     },
-    [query, sender, startDate, endDate, topK]
+    [query, sender, startDate, endDate, topK, activeConversation]
   );
 
   // Auto-search on initial mount so reference state renders immediately with real data
@@ -101,12 +112,12 @@ export default function App() {
     handleSearch('What did Priya say about the budget?');
   }, []);
 
-  // Re-trigger search when sender, dates, or topK filters change
+  // Re-trigger search when conversation, sender, dates, or topK filters change
   useEffect(() => {
     if (activeSearchQuery) {
       handleSearch(activeSearchQuery);
     }
-  }, [sender, startDate, endDate, topK]);
+  }, [sender, startDate, endDate, topK, activeConversation]);
 
   // Handle example query selection
   const handleSelectExample = (exQuery: string) => {
@@ -221,6 +232,12 @@ export default function App() {
               conversationName={activeConversation}
               results={displayedResults}
               onOpenContext={(messageId) => setActiveContextMessageId(messageId)}
+              onSwitchConversation={(conv) => setActiveConversation(conv)}
+              activeSearchQuery={activeSearchQuery}
+              onSelectQuery={(q) => {
+                setQuery(q);
+                handleSearch(q);
+              }}
             />
           </div>
         </main>

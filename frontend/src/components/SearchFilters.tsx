@@ -36,16 +36,34 @@ const CONVERSATIONS = [
   { id: 'Family Chat', name: 'Family Chat', icon: Users, color: 'bg-emerald-100 text-emerald-600' },
 ];
 
-const PARTICIPANTS = [
-  { name: 'Rahul Sharma', color: 'bg-blue-100 text-blue-700' },
-  { name: 'Priya Patel', color: 'bg-purple-100 text-purple-700' },
-  { name: 'Aman Verma', color: 'bg-sky-100 text-sky-700' },
-  { name: 'Sneha Rao', color: 'bg-pink-100 text-pink-700' },
-  { name: 'Vikram Singh', color: 'bg-amber-100 text-amber-700' },
-  { name: 'Neha Gupta', color: 'bg-emerald-100 text-emerald-700' },
-  { name: 'Rohan Mehta', color: 'bg-indigo-100 text-indigo-700' },
-  { name: 'Ananya Joshi', color: 'bg-rose-100 text-rose-700' },
-];
+const CONVERSATION_PARTICIPANTS: Record<string, Array<{ name: string; color: string }>> = {
+  'College Friends': [
+    { name: 'Rahul Sharma', color: 'bg-blue-100 text-blue-700' },
+    { name: 'Priya Patel', color: 'bg-purple-100 text-purple-700' },
+    { name: 'Aman Verma', color: 'bg-sky-100 text-sky-700' },
+    { name: 'Sneha Rao', color: 'bg-pink-100 text-pink-700' },
+    { name: 'Vikram Singh', color: 'bg-amber-100 text-amber-700' },
+    { name: 'Neha Gupta', color: 'bg-emerald-100 text-emerald-700' },
+    { name: 'Rohan Mehta', color: 'bg-indigo-100 text-indigo-700' },
+    { name: 'Ananya Joshi', color: 'bg-rose-100 text-rose-700' },
+  ],
+  'Project Team': [
+    { name: 'Aman Verma', color: 'bg-sky-100 text-sky-700' },
+    { name: 'Sneha Rao', color: 'bg-pink-100 text-pink-700' },
+    { name: 'Rohan Mehta', color: 'bg-indigo-100 text-indigo-700' },
+    { name: 'Ananya Joshi', color: 'bg-rose-100 text-rose-700' },
+  ],
+  'Rahul & Priya': [
+    { name: 'Rahul Sharma', color: 'bg-blue-100 text-blue-700' },
+    { name: 'Priya Patel', color: 'bg-purple-100 text-purple-700' },
+  ],
+  'Family Chat': [
+    { name: 'Rahul Sharma', color: 'bg-blue-100 text-blue-700' },
+    { name: 'Anita Sharma', color: 'bg-emerald-100 text-emerald-700' },
+    { name: 'Rajesh Sharma', color: 'bg-cyan-100 text-cyan-700' },
+    { name: 'Pooja Sharma', color: 'bg-fuchsia-100 text-fuchsia-700' },
+  ],
+};
 
 const TIME_PRESETS = [
   { label: 'Any time', start: '', end: '', desc: 'All 6 months history' },
@@ -103,8 +121,18 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
     };
   }, []);
 
+  // Active conversation participants
+  const activeParticipants = CONVERSATION_PARTICIPANTS[conversation] || CONVERSATION_PARTICIPANTS['College Friends'];
+
+  // Auto-reset sender if the selected person is not in the active conversation
+  useEffect(() => {
+    if (sender && !activeParticipants.some((p) => p.name === sender)) {
+      setSender('');
+    }
+  }, [conversation, sender, setSender, activeParticipants]);
+
   // Filter participants based on search query
-  const filteredParticipants = PARTICIPANTS.filter((p) =>
+  const filteredParticipants = activeParticipants.filter((p) =>
     p.name.toLowerCase().includes(personSearch.toLowerCase().trim())
   );
 
@@ -242,7 +270,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                     </div>
                     <div className="text-left">
                       <span className="block font-medium">All people</span>
-                      <span className="block text-[10px] text-gray-400">8 participants</span>
+                      <span className="block text-[10px] text-gray-400">{activeParticipants.length} participants</span>
                     </div>
                   </div>
                   {sender === '' && <Check className="w-3.5 h-3.5 text-indigo-600" />}

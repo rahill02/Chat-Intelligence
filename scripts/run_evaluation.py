@@ -136,6 +136,7 @@ async def evaluate_benchmark(
         t0 = time.perf_counter()
         search_resp = search_service.search(
             query=q_text,
+            conversation_id=q.get("conversation_id", "conv_main_group"),
             top_k=top_k,
             include_context=True,
             context_window=3
@@ -154,7 +155,11 @@ async def evaluate_benchmark(
 
         # Answering execution
         t_ans0 = time.perf_counter()
-        ans_req = AnswerRequest(query=q_text, top_k=top_k)
+        ans_req = AnswerRequest(
+            query=q_text,
+            conversation_id=q.get("conversation_id", "conv_main_group"),
+            top_k=top_k
+        )
         ans_resp = await answer_service.answer_question(ans_req)
         ans_duration_ms = (time.perf_counter() - t_ans0) * 1000
         answer_latencies.append(ans_duration_ms)

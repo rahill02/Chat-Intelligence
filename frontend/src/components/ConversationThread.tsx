@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Search, Users, ArrowRight } from 'lucide-react';
 import type { SearchResultItem } from '../types';
 
 interface ConversationThreadProps {
@@ -7,6 +7,9 @@ interface ConversationThreadProps {
   results: SearchResultItem[];
   onOpenContext: (messageId: string) => void;
   highlights?: string[];
+  onSwitchConversation?: (conv: string) => void;
+  activeSearchQuery?: string;
+  onSelectQuery?: (q: string) => void;
 }
 
 const AVATAR_COLORS: Record<string, { bg: string; text: string }> = {
@@ -18,6 +21,36 @@ const AVATAR_COLORS: Record<string, { bg: string; text: string }> = {
   'Neha Gupta': { bg: 'bg-emerald-100', text: 'text-emerald-700' },
   'Rohan Mehta': { bg: 'bg-indigo-100', text: 'text-indigo-700' },
   'Ananya Joshi': { bg: 'bg-rose-100', text: 'text-rose-700' },
+  'Anita Sharma': { bg: 'bg-emerald-100', text: 'text-emerald-700' },
+  'Rajesh Sharma': { bg: 'bg-cyan-100', text: 'text-cyan-700' },
+  'Pooja Sharma': { bg: 'bg-fuchsia-100', text: 'text-fuchsia-700' },
+};
+
+const SUGGESTED_QUERIES: Record<string, string[]> = {
+  'College Friends': [
+    'What did Priya say about the budget?',
+    'When is the NeuralByte hackathon?',
+    'Who received the Google offer?',
+    'Where are we going for the trip?',
+  ],
+  'Project Team': [
+    'FastAPI backend setup',
+    'React frontend components',
+    'Docker containerization',
+    'API documentation endpoints',
+  ],
+  'Rahul & Priya': [
+    'Dinner plans for tonight',
+    'Weekend movie tickets',
+    'Coffee meetup tomorrow',
+    'Book recommendation',
+  ],
+  'Family Chat': [
+    'Train tickets for Diwali',
+    'Sunday family dinner',
+    'Diwali sweets preparation',
+    'Trip photos shared',
+  ],
 };
 
 function formatMessageDate(isoString: string): string {
@@ -39,12 +72,67 @@ export const ConversationThread: React.FC<ConversationThreadProps> = ({
   conversationName = 'College Friends',
   results,
   onOpenContext,
+  onSwitchConversation,
+  activeSearchQuery,
+  onSelectQuery,
 }) => {
   if (results.length === 0) {
+    const suggestions = SUGGESTED_QUERIES[conversationName] || SUGGESTED_QUERIES['College Friends'];
+    const isCollegeFriends = conversationName === 'College Friends';
+
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center">
-        <p className="text-sm font-medium text-gray-700">No relevant messages found</p>
-        <p className="text-xs text-gray-400 mt-1">Try searching with different terms or adjusting your filters.</p>
+      <div className="space-y-4">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-8 text-center shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100/80 text-indigo-600 flex items-center justify-center mx-auto mb-3.5 shadow-2xs">
+            <Search className="w-5 h-5" />
+          </div>
+          <h3 className="text-base font-semibold text-gray-900">
+            No matching messages in &ldquo;{conversationName}&rdquo;
+          </h3>
+          <p className="text-xs text-gray-500 max-w-md mx-auto mt-1.5 leading-relaxed">
+            {activeSearchQuery ? (
+              <>
+                We couldn&apos;t find any messages matching{' '}
+                <span className="font-semibold text-gray-700">&ldquo;{activeSearchQuery}&rdquo;</span> in this conversation thread.
+              </>
+            ) : (
+              'Try entering a keyword or adjusting your filters to find relevant messages.'
+            )}
+          </p>
+
+          {!isCollegeFriends && onSwitchConversation && (
+            <div className="mt-5">
+              <button
+                type="button"
+                onClick={() => onSwitchConversation('College Friends')}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm hover:shadow transition cursor-pointer"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>Search in College Friends (4,300+ msgs)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* Quick Suggestions for this channel */}
+          <div className="mt-6 pt-5 border-t border-gray-100">
+            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-2.5">
+              Try suggested queries for {conversationName}
+            </span>
+            <div className="flex flex-wrap justify-center gap-2">
+              {suggestions.map((sug) => (
+                <button
+                  key={sug}
+                  type="button"
+                  onClick={() => onSelectQuery?.(sug)}
+                  className="px-3 py-1.5 rounded-xl border border-gray-200 bg-gray-50/70 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 text-xs font-medium text-gray-700 transition cursor-pointer"
+                >
+                  &ldquo;{sug}&rdquo;
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -26,24 +26,28 @@ const RECENT_CONVERSATIONS = [
     name: 'College Friends',
     icon: Users,
     color: 'bg-blue-100 text-blue-600',
+    count: '4.3k',
   },
   {
     id: 'Project Team',
     name: 'Project Team',
     icon: Hash,
     color: 'bg-amber-100 text-amber-600',
+    count: '20',
   },
   {
     id: 'Rahul & Priya',
     name: 'Rahul & Priya',
     icon: MessageCircle,
     color: 'bg-purple-100 text-purple-600',
+    count: '14',
   },
   {
     id: 'Family Chat',
     name: 'Family Chat',
     icon: Users,
     color: 'bg-emerald-100 text-emerald-600',
+    count: '14',
   },
 ];
 
@@ -151,7 +155,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${conv.color}`}>
                     <Icon className="w-3.5 h-3.5" />
                   </div>
-                  <span className="truncate">{conv.name}</span>
+                  <span className="truncate flex-1 text-left">{conv.name}</span>
+                  <span
+                    className={`text-[11px] font-medium px-1.5 py-0.5 rounded-md shrink-0 ${
+                      isSelected ? 'bg-gray-200/80 text-gray-700 font-semibold' : 'bg-gray-100 text-gray-400'
+                    }`}
+                  >
+                    {conv.count}
+                  </span>
                 </button>
               );
             })}
