@@ -91,7 +91,7 @@ Provide a grounded response with citations in the required JSON format:"""
 Return valid JSON adhering strictly to this schema:
 {{
   "topic": "{topic}",
-  "overview": "Concise 2-3 sentence overview of the conversation thread",
+  "overview": "A comprehensive, highly informative 3-5 sentence explanation covering what was discussed, the context, key consensus or limits agreed upon, and next steps in clear, understandable language (do NOT give a brief 1-2 sentence generic summary)",
   "key_decisions": [
     {{
       "decision": "What was agreed or decided",
@@ -189,7 +189,7 @@ class OpenAILLMProvider(BaseLLMProvider):
 Return valid JSON adhering strictly to this schema:
 {{
   "topic": "{topic}",
-  "overview": "Concise 2-3 sentence overview of the conversation thread",
+  "overview": "A comprehensive, highly informative 3-5 sentence explanation covering what was discussed, the context, key consensus or limits agreed upon, and next steps in clear, understandable language (do NOT give a brief 1-2 sentence generic summary)",
   "key_decisions": [
     {{
       "decision": "What was agreed or decided",
@@ -313,10 +313,70 @@ class MockLLMProvider(BaseLLMProvider):
         t_lower = topic.lower()
         msg_ids = [m.get("id") for m in messages if m.get("id")]
 
-        if "manali" in t_lower or "trip" in t_lower or "vacation" in t_lower:
+        if "budget" in t_lower or "expense" in t_lower or "cost" in t_lower or "money" in t_lower:
+            return {
+                "topic": topic or "Budget & Expenses",
+                "overview": (
+                    "The group engaged in thorough discussions regarding expenses, primarily focusing on the financial planning for the Manali vacation and routine shared meals. "
+                    "To ensure the trip remained affordable for everyone, Priya established a strict expenditure cap of ₹5,000 per person maximum. "
+                    "In adherence to this limit, Sneha verified that lodging at Snow Valley Resorts comfortably fit within the group's accommodation budget. "
+                    "Beyond the vacation, members routinely split shared dining bills—such as a ₹2,400 dinner at Paradise Biryani divided equally at ₹300 per person—with "
+                    "Rohan coordinating expense settlements and reimbursements via UPI (GPay/PhonePe). Across all threads, the group prioritizes transparency and consensus before making financial commitments."
+                ),
+                "key_decisions": [
+                    {
+                        "decision": "Enforced strict vacation budget ceiling of ₹5,000 per person maximum",
+                        "decided_by": "Priya Patel",
+                        "timestamp": "2026-03-15T11:20:05Z",
+                        "message_id": "msg_00290"
+                    },
+                    {
+                        "decision": "Selected Snow Valley Resorts for lodging because its tariff fits right within the group budget",
+                        "decided_by": "Sneha Rao",
+                        "timestamp": "2026-03-19T20:15:30Z",
+                        "message_id": "msg_00390"
+                    },
+                    {
+                        "decision": "Agreed to split shared dining and group activity expenses equally via UPI (GPay/PhonePe)",
+                        "decided_by": "Rohan Mehta",
+                        "timestamp": "2026-06-02T22:15:00Z",
+                        "message_id": "msg_02218"
+                    }
+                ],
+                "action_items": [
+                    {
+                        "task": "Maintain unified group expense pool and monitor individual payments against the ₹5,000 cap",
+                        "assignee": "Priya Patel",
+                        "deadline": "2026-03-25",
+                        "message_id": "msg_00290"
+                    },
+                    {
+                        "task": "Finalize Snow Valley Resorts hotel reservation within the allocated budget",
+                        "assignee": "Rahul Sharma",
+                        "deadline": "2026-03-20",
+                        "message_id": "msg_00390"
+                    },
+                    {
+                        "task": "Remit individual payments for dining and travel expense splits via UPI",
+                        "assignee": "All Group Members",
+                        "deadline": "2026-06-05",
+                        "message_id": "msg_02218"
+                    }
+                ],
+                "timeline_dates": ["2026-03-15", "2026-03-19", "2026-06-02"],
+                "cited_message_ids": ["msg_00290", "msg_00390", "msg_02218"]
+            }
+
+        elif "manali" in t_lower or "trip" in t_lower or "vacation" in t_lower:
             return {
                 "topic": topic or "Trip to Manali",
-                "overview": "The group planned a 5-day mountain vacation to Manali, reaching consensus on budget limits, transport by Volvo bus, and hotel accommodations.",
+                "overview": (
+                    "The group extensively planned a 5-day mountain vacation to Manali, reaching complete consensus on destination choice, travel logistics, and accommodations. "
+                    "After evaluating multiple hill stations, Rahul confirmed Manali as the final vacation spot. "
+                    "Priya introduced a mandatory budget ceiling of ₹5,000 per person to keep the vacation accessible for all 8 members, which Sneha validated by selecting Snow Valley Resorts as the lodging partner. "
+                    "For travel, Vikram organized round-trip transit aboard an overnight Volvo semi-sleeper bus departing from Majnu Ka Tila in Delhi. "
+                    "Specific responsibilities were delegated among members for hotel room confirmations, seat reservations, and tracking group expense contributions."
+                ),
                 "key_decisions": [
                     {
                         "decision": "Confirmed Manali as the final vacation destination",
@@ -370,7 +430,12 @@ class MockLLMProvider(BaseLLMProvider):
         elif "exam" in t_lower or "ds" in t_lower or "study" in t_lower or "data structures" in t_lower:
             return {
                 "topic": topic or "Data Structures & Algorithms Exam",
-                "overview": "The group coordinated preparation for the university DSA exam, tracking schedule adjustments and dividing practice topics across study sessions.",
+                "overview": (
+                    "The group actively coordinated academic preparation for their upcoming university Data Structures & Algorithms (DSA) examination. "
+                    "Neha notified the group that the final exam had been officially postponed to April 28, providing vital extra preparation time. "
+                    "In response, members scheduled structured peer study sessions focusing on core challenging topics such as Binary Trees, Graph Traversal Algorithms, and Dynamic Programming. "
+                    "Aman and Neha divided responsibilities to synthesize lecture notes and facilitate interactive practice problem-solving discussions so everyone stays on track."
+                ),
                 "key_decisions": [
                     {
                         "decision": "DSA final exam confirmed postponed to April 28",
@@ -403,10 +468,14 @@ class MockLLMProvider(BaseLLMProvider):
                 "cited_message_ids": ["msg_01120", "msg_01205"]
             }
 
-        elif "hackathon" in t_lower or "neuralbyte" in t_lower or "project" in t_lower:
+        elif "hackathon" in t_lower or "neuralbyte" in t_lower or "project" in t_lower or "architecture" in t_lower:
             return {
                 "topic": topic or "NeuralByte Hackathon Preparation",
-                "overview": "The squad registered for the 36-hour hackathon as team NeuralByte, decided on a FastAPI and React tech stack, and distributed system roles.",
+                "overview": (
+                    "The squad formed a project team named 'NeuralByte' to participate in an upcoming 36-hour hackathon. "
+                    "After deliberating over architecture choices, the team selected a modern stack combining FastAPI for high-throughput backend services and React with Vite and Tailwind CSS for the user interface. "
+                    "Technical responsibilities were distributed based on expertise: Aman took ownership of the GitHub repository setup and cloud deployment pipelines on Render, while Sneha led UI/UX design, wireframing, and interactive component state management."
+                ),
                 "key_decisions": [
                     {
                         "decision": "Registered the hackathon team under the moniker NeuralByte",
@@ -439,24 +508,160 @@ class MockLLMProvider(BaseLLMProvider):
                 "cited_message_ids": ["msg_01861", "msg_01940"]
             }
 
+        elif "google" in t_lower or "intern" in t_lower or "offer" in t_lower:
+            return {
+                "topic": topic or "Google Summer Internship",
+                "overview": (
+                    "Aman Verma excitedly announced to the group that he signed the official offer letter for a Google Summer Software Engineering (SWE) internship. "
+                    "The group warmly congratulated him on the milestone, and Aman promised to host a celebratory treat for everyone. "
+                    "To support other group members preparing for upcoming recruitment drives, Priya shared an interview preparation sheet containing 75 curated LeetCode Medium questions pinned in their shared Google Drive folder."
+                ),
+                "key_decisions": [
+                    {
+                        "decision": "Accepted and signed Google SWE summer internship offer letter",
+                        "decided_by": "Aman Verma",
+                        "timestamp": "2026-07-08T19:45:00Z",
+                        "message_id": "msg_03046"
+                    },
+                    {
+                        "decision": "Confirmed group celebration treat hosted by Aman",
+                        "decided_by": "Group",
+                        "timestamp": "2026-07-08T20:00:00Z",
+                        "message_id": "msg_03046"
+                    }
+                ],
+                "action_items": [
+                    {
+                        "task": "Review curated 75 LeetCode medium questions in Google Drive folder",
+                        "assignee": "Group Members",
+                        "deadline": "2026-07-30",
+                        "message_id": "msg_03442"
+                    },
+                    {
+                        "task": "Coordinate date and restaurant venue for Aman's celebration treat",
+                        "assignee": "Aman Verma",
+                        "deadline": "2026-07-15",
+                        "message_id": "msg_03046"
+                    }
+                ],
+                "timeline_dates": ["2026-07-08", "2026-07-24"],
+                "cited_message_ids": ["msg_03046", "msg_03442"]
+            }
+
+        elif "birthday" in t_lower or "party" in t_lower or "bistro" in t_lower or "dinner" in t_lower:
+            return {
+                "topic": topic or "Priya's Birthday Celebration",
+                "overview": (
+                    "The group organized a surprise birthday dinner celebration for Priya at Olive Bistro. "
+                    "Sneha managed reservations, successfully booking a table for 8:00 PM and reminding all participants to arrive promptly to keep the surprise intact. "
+                    "Discussions centered on keeping the plans confidential from Priya, pooling contributions for the birthday cake and gift, and coordinating everyone's arrival timing."
+                ),
+                "key_decisions": [
+                    {
+                        "decision": "Reserved table at Olive Bistro for Priya's surprise party at 8 PM",
+                        "decided_by": "Sneha Rao",
+                        "timestamp": "2026-08-10T16:15:00Z",
+                        "message_id": "msg_03822"
+                    },
+                    {
+                        "decision": "Agreed on strict secrecy to surprise Priya upon arrival",
+                        "decided_by": "Group",
+                        "timestamp": "2026-08-10T16:30:00Z",
+                        "message_id": "msg_03822"
+                    }
+                ],
+                "action_items": [
+                    {
+                        "task": "Arrive at Olive Bistro by 7:45 PM before Priya arrives",
+                        "assignee": "All Group Members",
+                        "deadline": "2026-08-10",
+                        "message_id": "msg_03822"
+                    },
+                    {
+                        "task": "Collect cake and ensure candles and decorations are set up",
+                        "assignee": "Sneha Rao",
+                        "deadline": "2026-08-10",
+                        "message_id": "msg_03822"
+                    }
+                ],
+                "timeline_dates": ["2026-08-10"],
+                "cited_message_ids": ["msg_03822"]
+            }
+
         else:
-            # Dynamic fallback extracting from messages
-            first_few = messages[:5] if messages else []
+            # Informative dynamic synthesis from retrieved messages
+            senders = list(dict.fromkeys([
+                m.get("sender_name") or m.get("sender") 
+                for m in messages 
+                if m.get("sender_name") or m.get("sender")
+            ]))
+            sender_summary = ", ".join(senders[:3]) + (f" and {len(senders) - 3} others" if len(senders) > 3 else "")
+            
+            # Find substantial content messages (> 25 chars)
+            substantial_msgs = [
+                m for m in messages 
+                if len(m.get("content", "").strip()) > 25 and not any(
+                    w in m.get("content", "").lower() 
+                    for w in ["total bill", "pakka", "ok", "yes", "done"]
+                )
+            ]
+            if not substantial_msgs:
+                substantial_msgs = messages[:5]
+
+            # Build readable key points
+            points = []
+            for m in substantial_msgs[:3]:
+                content = m.get("content", "").strip().rstrip(".")
+                sender = m.get("sender_name") or m.get("sender") or "A participant"
+                points.append(f"{sender} noted: \"{content}\"")
+
+            points_text = " Furthermore, ".join(points) if points else f"key aspects of {topic} were thoroughly explored."
+
+            overview = (
+                f"The group engaged in a detailed discussion regarding '{topic}', with active contributions from {sender_summary or 'several members'}. "
+                f"Across the conversation thread, members exchanged perspectives, clarified details, and evaluated practical next steps. "
+                f"{points_text}. Overall, the dialogue established clear alignment among participants on how to proceed."
+            )
+
+            # Build meaningful decisions
             decisions = []
-            for m in first_few[:2]:
+            for m in substantial_msgs[:3]:
                 decisions.append({
-                    "decision": f"Discussed: {m.get('content', '')[:60]}...",
+                    "decision": m.get("content", "").strip(),
                     "decided_by": m.get("sender_name") or m.get("sender") or "Group",
                     "timestamp": m.get("timestamp"),
                     "message_id": m.get("id")
                 })
+            
+            # Fallback action items
+            action_items = [
+                {
+                    "task": f"Follow up on {topic.lower()} discussion points and coordinate next steps",
+                    "assignee": senders[0] if senders else "Group",
+                    "deadline": None,
+                    "message_id": substantial_msgs[0].get("id") if substantial_msgs else None
+                },
+                {
+                    "task": "Review agreed deliverables and confirm timing in the group chat",
+                    "assignee": "Group",
+                    "deadline": None,
+                    "message_id": substantial_msgs[1].get("id") if len(substantial_msgs) > 1 else None
+                }
+            ]
+
+            timeline_dates = sorted(list(set([
+                m.get("timestamp", "").split("T")[0] 
+                for m in messages 
+                if m.get("timestamp") and "T" in m.get("timestamp")
+            ])))[:6]
+
             return {
                 "topic": topic or "Conversation Overview",
-                "overview": f"Discussion thread spanning {len(messages)} messages regarding {topic or 'group activities'}.",
-                "key_decisions": decisions or [{"decision": "Agreed on project progress", "decided_by": "Group", "timestamp": None, "message_id": None}],
-                "action_items": [{"task": "Review conversation notes and follow up", "assignee": "Group", "deadline": None, "message_id": None}],
-                "timeline_dates": [m.get("timestamp", "").split("T")[0] for m in first_few if m.get("timestamp")],
-                "cited_message_ids": msg_ids[:4]
+                "overview": overview,
+                "key_decisions": decisions or [{"decision": f"Aligned on {topic} milestones", "decided_by": "Group", "timestamp": None, "message_id": None}],
+                "action_items": action_items,
+                "timeline_dates": timeline_dates,
+                "cited_message_ids": [m.get("id") for m in substantial_msgs[:4] if m.get("id")]
             }
 
 

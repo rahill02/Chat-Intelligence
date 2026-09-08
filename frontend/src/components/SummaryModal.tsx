@@ -238,21 +238,24 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
           ) : summaryData ? (
             <div className="space-y-6">
               {/* Overview Card */}
-              <div className="rounded-2xl bg-gray-50/70 border border-gray-200/80 p-5 space-y-2">
+              <div className="rounded-2xl bg-indigo-50/30 border border-indigo-100/80 p-5 space-y-2.5">
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span className="font-bold text-sm text-gray-900 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
                     <span>Executive Overview:</span>
-                    <span className="text-blue-600 font-semibold">{summaryData.topic}</span>
+                    <span className="text-indigo-600 font-semibold">{summaryData.topic}</span>
                   </span>
                   <div className="flex items-center gap-3 text-[11px] text-gray-400">
-                    <span>{summaryData.message_count} messages sampled</span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
+                    <span className="bg-white/80 px-2 py-0.5 rounded-md border border-gray-200/60 font-medium text-gray-500">
+                      {summaryData.message_count} messages analyzed
+                    </span>
+                    <span className="flex items-center gap-1 font-mono text-[10px]">
+                      <Clock className="w-3 h-3 text-gray-400" />
                       {summaryData.latency_ms}ms
                     </span>
                   </div>
                 </div>
-                <p className="text-sm text-gray-800 leading-relaxed font-normal">
+                <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-normal whitespace-pre-line">
                   {summaryData.overview}
                 </p>
               </div>
