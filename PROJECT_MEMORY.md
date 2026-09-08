@@ -134,11 +134,19 @@ _Last Updated: 2026-09-08 (Phase 11 Complete — Frontend UI Redesign)_
   - Authored comprehensive evaluation report (`docs/evaluation_report.md`) with performance matrix, category breakdowns, and refusal audit.
   - Added unit test suite (`backend/tests/test_evaluation.py`) asserting benchmark execution, anti-hallucination guarantees, and latency standards (all 32/32 backend pytest passing).
   - Verified clean frontend production compilation (`npm run build` passing in 554ms).
-- **2026-09-08 — Phase 11 Polish (Custom Popover Dropdowns & Direct Topic Summarization)**:
-  - Replaced native HTML select menus with custom Linear/Notion/Raycast floating popover dropdowns in `SearchFilters.tsx`.
-  - Implemented direct topic summarization: clicking "Summarize this topic" at the bottom right of `SearchInsightsPanel` directly summarizes the topic from the active screen (e.g. "Budget", "Trip to Manali") without presenting an input prompt or asking the user what to summarize.
-  - Added direct-mode banner with topic pill, instant summary generation, and subtle topic switcher in `SummaryModal.tsx`.
-  - All 32/32 backend tests passing, frontend builds cleanly in <600ms.
+- **2026-09-08 — Option B Complete (Multi-Chat Datasets, Dynamic Participant Filters, & Unified Serving)**:
+  - Added 3 distinct realistic conversations to SQLite and indexed all 4,348 messages into FAISS vector index:
+    - `conv_main_group` (College Friends): 4,300 messages.
+    - `conv_project_team` (Project Team): 20 messages.
+    - `conv_rahul_priya` (Rahul & Priya): 14 messages.
+    - `conv_family_chat` (Family Chat): 14 messages.
+  - Implemented seamless conversation switching: clicking any conversation in the sidebar or filter dropdown immediately switches the active scope, resets active filters, and runs that channel's primary discussion topic (e.g. Project Tech Stack, Olive Bistro dinner, Diwali Shatabdi tickets).
+  - SearchHeader input placeholder, query indicator, and quick example query pills dynamically adapt to the active conversation.
+  - Filter "Person" popover dynamically shows only participants of the active channel and auto-resets when switching channels.
+  - Sidebar displays message volume badges (`4.3k`, `20`, `14`, `14`).
+  - ConversationThread provides intelligent empty state with 1-click button to search in College Friends (4,300+ msgs) and clickable suggestion chips.
+  - Bound Vite server to `0.0.0.0` (all interfaces: IPv4, IPv6, localhost) and mounted `frontend/dist` in FastAPI `main.py` enabling unified single-port serving on `http://localhost:8000/` and `http://localhost:8000/app`.
+  - All 32/32 backend tests passing, production build passing.
 
 
 
