@@ -8,16 +8,44 @@ interface SearchHeaderProps {
   loading: boolean;
   activeSearchQuery?: string;
   onSelectExample: (q: string) => void;
+  conversation?: string;
 }
 
-const EXAMPLE_QUERIES = [
-  'What did Priya say about the budget?',
-  'When did we decide on the trip destination?',
-  'What was decided on March 14?',
-  'whn did aman gt the google offr?',
-  'Where did Aman deploy the staging build?',
-  'What is Rahul\'s favorite restaurant?',
-];
+const CONVERSATION_EXAMPLES: Record<string, string[]> = {
+  'College Friends': [
+    'What did Priya say about the budget?',
+    'When did we decide on the trip destination?',
+    'whn did aman gt the google offr?',
+    'Where did Aman deploy the staging build?',
+    'What is Rahul\'s favorite restaurant?',
+  ],
+  'Project Team': [
+    'What is our tech stack for the project?',
+    'FastAPI backend setup',
+    'React 19 with Vite frontend',
+    'Docker containerization setup',
+    'When is the hackathon MVP deadline?',
+  ],
+  'Rahul & Priya': [
+    'What are our weekend dinner plans?',
+    'Did we confirm Olive Bistro reservation?',
+    'System design book recommendations',
+    'Movie show timings for Sunday',
+  ],
+  'Family Chat': [
+    'What are the updates on Diwali train tickets?',
+    'When is Sunday family dinner?',
+    'Did Rahul book the Shatabdi tickets?',
+    'Kaju Katli sweets from hostel',
+  ],
+};
+
+const CONVERSATION_PLACEHOLDERS: Record<string, string> = {
+  'College Friends': 'What did Priya say about the budget?',
+  'Project Team': 'What is our tech stack for the project?',
+  'Rahul & Priya': 'What are our weekend dinner plans?',
+  'Family Chat': 'What are the updates on Diwali train tickets?',
+};
 
 export const SearchHeader: React.FC<SearchHeaderProps> = ({
   query,
@@ -26,8 +54,11 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
   loading,
   activeSearchQuery,
   onSelectExample,
+  conversation = 'College Friends',
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const examples = CONVERSATION_EXAMPLES[conversation] || CONVERSATION_EXAMPLES['College Friends'];
+  const placeholder = CONVERSATION_PLACEHOLDERS[conversation] || 'Search messages...';
 
   // Keyboard shortcut (Cmd/Ctrl + K to focus search)
   useEffect(() => {
@@ -74,7 +105,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="What did Priya say about the budget?"
+            placeholder={placeholder}
             className="w-full py-4 pr-28 text-sm text-gray-900 placeholder:text-gray-400 bg-transparent outline-none font-normal"
           />
 
@@ -116,14 +147,14 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
       {/* Sub-search helper / Active query indicator */}
       {activeSearchQuery && (
         <div className="text-xs text-gray-400 font-normal px-1">
-          Searching for <span className="text-gray-700 font-medium">"{activeSearchQuery}"</span>
+          Searching for <span className="text-gray-700 font-medium">"{activeSearchQuery}"</span> in <span className="text-indigo-600 font-medium">{conversation}</span>
         </div>
       )}
 
       {/* Quick Example Query Pills */}
       <div className="flex items-center gap-1.5 overflow-x-auto py-1 text-xs no-scrollbar">
         <span className="text-gray-400 shrink-0 text-[11px] font-medium">Examples:</span>
-        {EXAMPLE_QUERIES.map((eq, i) => (
+        {examples.map((eq, i) => (
           <button
             key={i}
             type="button"

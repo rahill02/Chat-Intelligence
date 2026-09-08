@@ -15,8 +15,11 @@ function extractTopicName(cleanedQuery?: string, originalQuery?: string): string
   if (text.includes('google') || text.includes('offr') || text.includes('internship')) return 'Google Summer Internship';
   if (text.includes('exam') || text.includes('postpone') || text.includes('dsa') || text.includes('study')) return 'Data Structures & Algorithms Exam';
   if (text.includes('hackathon') || text.includes('neuralbyte')) return 'NeuralByte Hackathon';
-  if (text.includes('dinner') || text.includes('birthday') || text.includes('party') || text.includes('celebrat')) return "Priya's Birthday Celebration";
   if (text.includes('fastapi') || text.includes('react') || text.includes('tech') || text.includes('stack')) return 'Project Architecture';
+  if (text.includes('docker') || text.includes('container') || text.includes('compose')) return 'Docker Containerization';
+  if (text.includes('diwali') || text.includes('ticket') || text.includes('train') || text.includes('shatabdi')) return 'Diwali Travel Plans';
+  if (text.includes('bistro') || text.includes('olive')) return 'Weekend Dinner';
+  if (text.includes('dinner') || text.includes('birthday') || text.includes('party') || text.includes('celebrat')) return "Priya's Birthday Celebration";
   if (text.includes('bus') || text.includes('volvo') || text.includes('majnu') || text.includes('transport')) return 'Travel Logistics';
   if (text.includes('render') || text.includes('deploy') || text.includes('staging')) return 'Deployment Pipeline';
   

@@ -19,6 +19,13 @@ const CONVERSATION_ID_MAP: Record<string, string> = {
   'Family Chat': 'conv_family_chat',
 };
 
+const CONVERSATION_DEFAULT_QUERIES: Record<string, string> = {
+  'College Friends': 'What did Priya say about the budget?',
+  'Project Team': 'What is our tech stack for the project?',
+  'Rahul & Priya': 'What are our weekend dinner plans?',
+  'Family Chat': 'What are the updates on Diwali train tickets?',
+};
+
 export default function App() {
   // Navigation & Conversation State
   const [activeNav, setActiveNav] = useState<string>('Search');
@@ -49,15 +56,16 @@ export default function App() {
 
   // Core Search Execution (Preserving all API logic and query flows)
   const handleSearch = useCallback(
-    async (overrideQuery?: string) => {
+    async (overrideQuery?: string, overrideConv?: string) => {
       const targetQuery = (overrideQuery ?? query).trim();
       if (!targetQuery) return;
 
+      const targetConv = overrideConv ?? activeConversation;
       setSearchLoading(true);
       setError(null);
       setActiveSearchQuery(targetQuery);
 
-      const conversationId = CONVERSATION_ID_MAP[activeConversation] || null;
+      const conversationId = CONVERSATION_ID_MAP[targetConv] || null;
 
       try {
         // 1. Vector & Hybrid Candidate Search
@@ -112,12 +120,26 @@ export default function App() {
     handleSearch('What did Priya say about the budget?');
   }, []);
 
-  // Re-trigger search when conversation, sender, dates, or topK filters change
+  // Handle conversation change smoothly with channel-tailored query and reset filters
+  const handleSelectConversation = useCallback(
+    (newConv: string) => {
+      setActiveConversation(newConv);
+      setSender('');
+      setStartDate('');
+      setEndDate('');
+      const defaultQ = CONVERSATION_DEFAULT_QUERIES[newConv] || 'What was discussed?';
+      setQuery(defaultQ);
+      handleSearch(defaultQ, newConv);
+    },
+    [handleSearch]
+  );
+
+  // Re-trigger search when sender, dates, or topK filters change
   useEffect(() => {
     if (activeSearchQuery) {
       handleSearch(activeSearchQuery);
     }
-  }, [sender, startDate, endDate, topK, activeConversation]);
+  }, [sender, startDate, endDate, topK]);
 
   // Handle example query selection
   const handleSelectExample = (exQuery: string) => {
@@ -169,7 +191,7 @@ export default function App() {
           setSummaryModalOpen(true);
         }}
         activeConversation={activeConversation}
-        onSelectConversation={(conv) => setActiveConversation(conv)}
+        onSelectConversation={handleSelectConversation}
       />
 
       {/* 2. Center Content Area */}
@@ -190,12 +212,13 @@ export default function App() {
               loading={searchLoading}
               activeSearchQuery={activeSearchQuery}
               onSelectExample={handleSelectExample}
+              conversation={activeConversation}
             />
 
             {/* Filter Pills */}
             <SearchFilters
               conversation={activeConversation}
-              setConversation={setActiveConversation}
+              setConversation={handleSelectConversation}
               sender={sender}
               setSender={setSender}
               startDate={startDate}
@@ -232,7 +255,7 @@ export default function App() {
               conversationName={activeConversation}
               results={displayedResults}
               onOpenContext={(messageId) => setActiveContextMessageId(messageId)}
-              onSwitchConversation={(conv) => setActiveConversation(conv)}
+              onSwitchConversation={handleSelectConversation}
               activeSearchQuery={activeSearchQuery}
               onSelectQuery={(q) => {
                 setQuery(q);
