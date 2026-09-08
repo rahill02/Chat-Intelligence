@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   Search,
   MessageSquare,
@@ -18,6 +18,8 @@ interface SidebarProps {
   onOpenSummaries: () => void;
   activeConversation?: string;
   onSelectConversation?: (conv: string) => void;
+  onOpenSettings?: () => void;
+  onOpenHelp?: () => void;
 }
 
 const RECENT_CONVERSATIONS = [
@@ -57,6 +59,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenSummaries,
   activeConversation = 'College Friends',
   onSelectConversation,
+  onOpenSettings,
+  onOpenHelp,
 }) => {
   return (
     <aside className="w-64 shrink-0 bg-white border-r border-gray-200/80 flex flex-col justify-between h-screen sticky top-0 select-none">
@@ -101,7 +105,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
-            <MessageSquare className="w-4 h-4 text-gray-400" />
+            <MessageSquare
+              className={`w-4 h-4 ${activeNav === 'Conversations' ? 'text-blue-600' : 'text-gray-400'}`}
+            />
             <span>Conversations</span>
           </button>
 
@@ -114,7 +120,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
-            <FileText className="w-4 h-4 text-gray-400" />
+            <FileText
+              className={`w-4 h-4 ${activeNav === 'Summaries' ? 'text-blue-600' : 'text-gray-400'}`}
+            />
             <span>Summaries</span>
           </button>
 
@@ -127,7 +135,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
-            <Bookmark className="w-4 h-4 text-gray-400" />
+            <Bookmark
+              className={`w-4 h-4 ${activeNav === 'Saved Searches' ? 'text-blue-600' : 'text-gray-400'}`}
+            />
             <span>Saved Searches</span>
           </button>
         </nav>
@@ -140,12 +150,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="space-y-1">
             {RECENT_CONVERSATIONS.map((conv) => {
               const Icon = conv.icon;
-              const isSelected = activeConversation === conv.name;
+              const isSelected = activeConversation === conv.name && activeNav === 'Search';
               return (
                 <button
                   key={conv.id}
                   type="button"
-                  onClick={() => onSelectConversation?.(conv.name)}
+                  onClick={() => {
+                    onSelectNav?.('Search');
+                    onSelectConversation?.(conv.name);
+                  }}
                   className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition cursor-pointer ${
                     isSelected
                       ? 'bg-gray-100/80 text-gray-900 font-semibold shadow-2xs'
@@ -174,6 +187,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4 border-t border-gray-100 space-y-1">
         <button
           type="button"
+          onClick={onOpenSettings}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-50 transition cursor-pointer"
         >
           <Settings className="w-4 h-4 text-gray-400" />
@@ -181,6 +195,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </button>
         <button
           type="button"
+          onClick={onOpenHelp}
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-50 transition cursor-pointer"
         >
           <HelpCircle className="w-4 h-4 text-gray-400" />

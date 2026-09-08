@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { AlertCircle } from 'lucide-react';
+﻿import { useState, useEffect, useCallback, useMemo } from 'react';
+import { AlertCircle, Sparkles } from 'lucide-react';
 import { searchMessages, getAnswer } from './services/api';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
@@ -10,6 +10,10 @@ import { ConversationThread } from './components/ConversationThread';
 import { SearchInsightsPanel } from './components/SearchInsightsPanel';
 import { ContextModal } from './components/ContextModal';
 import { SummaryModal } from './components/SummaryModal';
+import { SettingsModal } from './components/SettingsModal';
+import { HelpModal } from './components/HelpModal';
+import { ConversationsView } from './components/ConversationsView';
+import { SavedSearchesView } from './components/SavedSearchesView';
 import type { SearchResponse, AnswerResponse, SearchResultItem } from './types';
 
 const CONVERSATION_ID_MAP: Record<string, string> = {
@@ -32,7 +36,15 @@ export default function App() {
   const [activeConversation, setActiveConversation] = useState<string>('College Friends');
   const [insightsPanelOpen, setInsightsPanelOpen] = useState<boolean>(true);
 
-  // Search & Filter State (Default initialized to match reference query)
+  // Modals
+  const [settingsModalOpen, setSettingsModalOpen] = useState<boolean>(false);
+  const [helpModalOpen, setHelpModalOpen] = useState<boolean>(false);
+  const [activeContextMessageId, setActiveContextMessageId] = useState<string | null>(null);
+  const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
+  const [summaryTopic, setSummaryTopic] = useState<string>('Budget');
+  const [directSummaryMode, setDirectSummaryMode] = useState<boolean>(false);
+
+  // Search & Filter State
   const [query, setQuery] = useState<string>('What did Priya say about the budget?');
   const [activeSearchQuery, setActiveSearchQuery] = useState<string>('What did Priya say about the budget?');
   const [sender, setSender] = useState<string>('');
@@ -48,13 +60,7 @@ export default function App() {
   const [answerLoading, setAnswerLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Modals
-  const [activeContextMessageId, setActiveContextMessageId] = useState<string | null>(null);
-  const [summaryModalOpen, setSummaryModalOpen] = useState<boolean>(false);
-  const [summaryTopic, setSummaryTopic] = useState<string>('Budget');
-  const [directSummaryMode, setDirectSummaryMode] = useState<boolean>(false);
-
-  // Core Search Execution (Preserving all API logic and query flows)
+  // Core Search Execution
   const handleSearch = useCallback(
     async (overrideQuery?: string, overrideConv?: string) => {
       const targetQuery = (overrideQuery ?? query).trim();
@@ -115,12 +121,12 @@ export default function App() {
     [query, sender, startDate, endDate, topK, activeConversation]
   );
 
-  // Auto-search on initial mount so reference state renders immediately with real data
+  // Auto-search on initial mount
   useEffect(() => {
     handleSearch('What did Priya say about the budget?');
   }, []);
 
-  // Handle conversation change smoothly with channel-tailored query and reset filters
+  // Handle conversation change smoothly
   const handleSelectConversation = useCallback(
     (newConv: string) => {
       setActiveConversation(newConv);
@@ -156,6 +162,16 @@ export default function App() {
     setTopK(10);
   };
 
+  // Reset entire demo state
+  const handleResetDemo = () => {
+    handleResetFilters();
+    setActiveConversation('College Friends');
+    const defaultQ = CONVERSATION_DEFAULT_QUERIES['College Friends'];
+    setQuery(defaultQ);
+    setActiveNav('Search');
+    handleSearch(defaultQ, 'College Friends');
+  };
+
   // Sorted Results based on selected Sort filter
   const displayedResults: SearchResultItem[] = useMemo(() => {
     if (!searchResults?.results) return [];
@@ -170,7 +186,6 @@ export default function App() {
         (a, b) => new Date(a.message.timestamp).getTime() - new Date(b.message.timestamp).getTime()
       );
     }
-    // Default 'Relevance' retains hybrid score order
     return list;
   }, [searchResults, sortBy]);
 
@@ -180,10 +195,11 @@ export default function App() {
       <Sidebar
         activeNav={activeNav}
         onSelectNav={(nav) => {
-          setActiveNav(nav);
           if (nav === 'Summaries') {
             setDirectSummaryMode(false);
             setSummaryModalOpen(true);
+          } else {
+            setActiveNav(nav);
           }
         }}
         onOpenSummaries={() => {
@@ -192,6 +208,8 @@ export default function App() {
         }}
         activeConversation={activeConversation}
         onSelectConversation={handleSelectConversation}
+        onOpenSettings={() => setSettingsModalOpen(true)}
+        onOpenHelp={() => setHelpModalOpen(true)}
       />
 
       {/* 2. Center Content Area */}
@@ -199,75 +217,123 @@ export default function App() {
         <TopBar
           currentSection={activeNav}
           conversationName={activeConversation}
+          insightsPanelOpen={insightsPanelOpen}
+          onToggleInsights={() => setInsightsPanelOpen((prev) => !prev)}
+          onOpenSettings={() => setSettingsModalOpen(true)}
+          onOpenHelp={() => setHelpModalOpen(true)}
+          onResetDemo={handleResetDemo}
         />
 
-        {/* Scrollable Center Container */}
+        {/* Scrollable Main Container */}
         <main className="flex-1 overflow-y-auto px-6 lg:px-12 py-8">
-          <div className="max-w-3xl mx-auto space-y-6">
-            {/* Search Input Section */}
-            <SearchHeader
-              query={query}
-              setQuery={setQuery}
-              onSearch={handleSearch}
-              loading={searchLoading}
-              activeSearchQuery={activeSearchQuery}
-              onSelectExample={handleSelectExample}
-              conversation={activeConversation}
-            />
+          {activeNav === 'Search' && (
+            <div className="max-w-3xl mx-auto space-y-6">
+              {/* Search Input Section */}
+              <SearchHeader
+                query={query}
+                setQuery={setQuery}
+                onSearch={handleSearch}
+                loading={searchLoading}
+                activeSearchQuery={activeSearchQuery}
+                onSelectExample={handleSelectExample}
+                conversation={activeConversation}
+              />
 
-            {/* Filter Pills */}
-            <SearchFilters
-              conversation={activeConversation}
-              setConversation={handleSelectConversation}
-              sender={sender}
-              setSender={setSender}
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              onReset={handleResetFilters}
-            />
+              {/* Filter Pills */}
+              <SearchFilters
+                conversation={activeConversation}
+                setConversation={handleSelectConversation}
+                sender={sender}
+                setSender={setSender}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                endDate={endDate}
+                setEndDate={setEndDate}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                onReset={handleResetFilters}
+              />
 
-            {/* Error Message */}
-            {error && (
-              <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
-                <span>{error}</span>
-              </div>
-            )}
+              {/* Restore Insights Floating Indicator when panel is hidden */}
+              {!insightsPanelOpen && (
+                <div className="flex items-center justify-between px-3.5 py-2 rounded-2xl bg-indigo-50/70 border border-indigo-100/90 text-xs">
+                  <div className="flex items-center gap-2 text-indigo-900">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                    <span className="font-medium">Search Insights panel is hidden</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setInsightsPanelOpen(true)}
+                    className="font-semibold text-indigo-600 hover:text-indigo-800 transition cursor-pointer"
+                  >
+                    Show Insights &rarr;
+                  </button>
+                </div>
+              )}
 
-            {/* Grounded AI Answer Card */}
-            <AIAnswerCard
-              answerData={answerData}
-              loading={answerLoading}
-              totalSourcesCount={searchResults?.results?.length ?? 4}
-              onViewSources={() => {
-                if (searchResults?.results?.[0]) {
-                  setActiveContextMessageId(searchResults.results[0].message.id);
+              {/* Error Message */}
+              {error && (
+                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* Grounded AI Answer Card */}
+              <AIAnswerCard
+                answerData={answerData}
+                loading={answerLoading}
+                totalSourcesCount={searchResults?.results?.length ?? 4}
+                onViewSources={() => {
+                  if (searchResults?.results?.[0]) {
+                    setActiveContextMessageId(searchResults.results[0].message.id);
+                  }
+                }}
+              />
+
+              {/* Relevant Conversation Stream */}
+              <ConversationThread
+                conversationName={activeConversation}
+                results={displayedResults}
+                onOpenContext={(messageId) => setActiveContextMessageId(messageId)}
+                onSwitchConversation={handleSelectConversation}
+                activeSearchQuery={activeSearchQuery}
+                onSelectQuery={(q) => {
+                  setQuery(q);
+                  handleSearch(q);
+                }}
+              />
+            </div>
+          )}
+
+          {activeNav === 'Conversations' && (
+            <ConversationsView
+              onSelectAndSearch={(convName, q) => {
+                handleSelectConversation(convName);
+                if (q) {
+                  setQuery(q);
+                  handleSearch(q, convName);
                 }
+                setActiveNav('Search');
               }}
             />
+          )}
 
-            {/* Relevant Conversation Stream */}
-            <ConversationThread
-              conversationName={activeConversation}
-              results={displayedResults}
-              onOpenContext={(messageId) => setActiveContextMessageId(messageId)}
-              onSwitchConversation={handleSelectConversation}
-              activeSearchQuery={activeSearchQuery}
-              onSelectQuery={(q) => {
-                setQuery(q);
-                handleSearch(q);
+          {activeNav === 'Saved Searches' && (
+            <SavedSearchesView
+              onRunSearch={(savedQuery, savedChannel) => {
+                handleSelectConversation(savedChannel);
+                setQuery(savedQuery);
+                handleSearch(savedQuery, savedChannel);
+                setActiveNav('Search');
               }}
             />
-          </div>
+          )}
         </main>
       </div>
 
       {/* 3. Right Search Insights Panel */}
-      {insightsPanelOpen && (
+      {insightsPanelOpen && activeNav === 'Search' && (
         <SearchInsightsPanel
           searchResults={searchResults}
           onClose={() => setInsightsPanelOpen(false)}
@@ -279,13 +345,12 @@ export default function App() {
         />
       )}
 
-      {/* Reusable Context Modal */}
+      {/* Modals */}
       <ContextModal
         messageId={activeContextMessageId}
         onClose={() => setActiveContextMessageId(null)}
       />
 
-      {/* Reusable AI Summary Modal */}
       <SummaryModal
         isOpen={summaryModalOpen}
         initialTopic={summaryTopic}
@@ -295,6 +360,16 @@ export default function App() {
           setSummaryModalOpen(false);
           setActiveContextMessageId(id);
         }}
+      />
+
+      <SettingsModal
+        isOpen={settingsModalOpen}
+        onClose={() => setSettingsModalOpen(false)}
+      />
+
+      <HelpModal
+        isOpen={helpModalOpen}
+        onClose={() => setHelpModalOpen(false)}
       />
     </div>
   );
