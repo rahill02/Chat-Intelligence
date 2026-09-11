@@ -1,0 +1,28 @@
+﻿# Node / Frontend build artifacts
+frontend/node_modules
+frontend/dist
+frontend/.vite
+
+# Python virtual environment and caches
+.venv
+backend/.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+
+# Git and OS metadata
+.git
+.github
+.gitignore
+.DS_Store
+Thumbs.db
+*.log
+
+# Local environment secrets
+.env
+.env.local
+.env.*.local

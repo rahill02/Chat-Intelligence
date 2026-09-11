@@ -151,6 +151,23 @@ npm run build
 
 ---
 
+## 🚢 Deployment & Containerization
+
+Chat Intelligence uses a **multi-stage production Docker build** that compiles the React 19 frontend and serves it directly alongside the FastAPI backend from a single unified container on port `$PORT` (default `8000`).
+
+### 1. Run with Docker Compose
+```bash
+docker compose up -d --build
+```
+Access the application at `http://localhost:8000`.
+
+### 2. Deploy to Cloud (Render / Railway / Hugging Face)
+- **Render (Free Web Service)**: Connect repository, select **Docker** runtime, and deploy with zero setup.
+- **Railway**: Click **Deploy from GitHub** to automatically build and expose a public SSL domain.
+- **Detailed Step-by-Step Guide**: See [`docs/deployment_guide.md`](docs/deployment_guide.md) for complete instructions.
+
+---
+
 ## 📁 Repository Structure
 
 ```
